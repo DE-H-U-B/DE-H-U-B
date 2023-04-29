@@ -1215,9 +1215,9 @@ Client = Main:Label("Server Pring Fps")
         end
     end)
 
-    Main:Seperator("Auto Farm")
+Main:Seperator("Auto Farm")
 
-local Toggle1 = Main:Toggle("AutoFarm Mobs", nil, function(State)
+Main:Toggle("AutoFarm Mobs", nil, function(State)
 Settings.Mobs = State
 
 RunService.Stepped:connect(
@@ -1254,7 +1254,6 @@ spawn(
     end
 )
 
-
 spawn(function()
     while wait() and Settings.Mobs do 
         pcall(function()
@@ -1272,7 +1271,7 @@ local Dropdown3 = Main:Dropdown("Kill Method", {"Fist","Sword"}, function(Name)
 end)
 
 Dropdown3:SetOption("Fist")
-local Slider1 = Main:Slider("Mob Distance",0,13,Settings.Distance,false, function(Value)
+Main:Slider("Mob Distance",0,13,Settings.Distance,false, function(Value)
 	Settings.Distance = Value
 end)
 
@@ -1289,7 +1288,7 @@ local Dropdown3 = Main:Dropdown("Teleport To NPCS", NPCS, function(Name)
     Player.Character.HumanoidRootPart.CFrame = Workspace[Name]:GetModelCFrame()
  end)
 
-local Toggle1 = Main:Toggle("Rice AutoFarm", Settings.AutoQuest, function(State)
+Main:Toggle("Rice AutoFarm", Settings.AutoQuest, function(State)
 Settings.AutoQuest = State
 
 RunService.Stepped:connect(
@@ -1332,7 +1331,7 @@ spawn(
 
 end)
 
-local Toggle1 = Main:Toggle("Wagon AutoFarm", Settings.AutoQuest1, function(State)
+Main:Toggle("Wagon AutoFarm", Settings.AutoQuest1, function(State)
 Settings.AutoQuest1 = State
 
 RunService.Stepped:connect(
@@ -1367,11 +1366,11 @@ spawn(
 
 end)
 
-local Slider1 = Main:Slider("Change Player Transparency",0,1,nil,false, function(Value)
+Main:Slider("Change Player Transparency",0,1,nil,false, function(Value)
 	Invis(Value)
 end)
 
-local Toggle1 = Main:Toggle("Kill Aura", Settings.Troll, function(State)
+Main:Toggle("Kill Aura", Settings.Troll, function(State)
 Settings.Troll = State
 spawn(
     function()
@@ -1383,7 +1382,7 @@ spawn(
     end
 )
 end)
-local Toggle1 = Main:Toggle("Infinite Stamima", Settings.InfiniteStamima, function(State)
+Main:Toggle("Infinite Stamima", Settings.InfiniteStamima, function(State)
 Settings.InfiniteStamima = State
 spawn(
     function()
@@ -1395,7 +1394,7 @@ spawn(
 )
 
 end)
-local Toggle1 = Main:Toggle("Infinite Breath", Settings.InfiniteStamima2, function(State)
+Main:Toggle("Infinite Breath", Settings.InfiniteStamima2, function(State)
 Settings.InfiniteStamima2 = State
 spawn(
     function()
@@ -1410,7 +1409,7 @@ end)
 
 
 
-local Toggle1 = Main:Toggle("AutoFish", Settings.AutoFish, function(State)
+Main:Toggle("AutoFish", Settings.AutoFish, function(State)
 Settings.AutoFish = State
 RunService.Stepped:connect(
     function()
@@ -1490,7 +1489,7 @@ spawn(
 
 
 end)
-local Toggle1 = Main:Toggle("Auto Sell All Fish", Settings.AutoSellFish, function(State)
+Main:Toggle("Auto Sell All Fish", Settings.AutoSellFish, function(State)
 Settings.AutoSellFish = State
 spawn(function()
 while Settings.AutoSellFish do
