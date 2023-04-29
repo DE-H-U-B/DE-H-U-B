@@ -4,8 +4,8 @@ if game.PlaceId == 6152116144 then
     repeat wait() until game:GetService("Players")
     
     if not game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart") end
-        
     wait(1)
+end
 
 do local GUI = game.CoreGui:FindFirstChild("SOMEXHUB");if GUI then GUI:Destroy();end;if _G.Color == nil then
        _G.Color = Color3.fromRGB(0,0,255)
@@ -1217,198 +1217,6 @@ Client = Main:Label("Server Pring Fps")
 
 Main:Seperator("Auto Farm")
 
-Main:Toggle("AutoFarm Mobs", nil, function(State)
-Settings.Mobs = State
-
-RunService.Stepped:connect(
-    function()
-        if Settings.Mobs then
-            pcall(
-                function()
-                    Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-                    for i, v in pairs(Player.Backpack:GetChildren()) do
-                        if v:IsA("Tool") and (v:FindFirstChild("SwordName") and Settings.FightMethod == "Sword" or v.Name == ("Combat") and Settings.FightMethod == "Fist") then
-                            Player.Character:FindFirstChildWhichIsA("Humanoid"):EquipTool(v)
-                        end 
-                    end
-                end
-            )
-        end
-    end
-)
-
-spawn(
-    function()
-        while wait() and Settings.Mobs do
-            pcall(
-                function()
-                    Tween(
-                        Player.Character.HumanoidRootPart,
-                        getNearestMob():GetModelCFrame() * CFrame.new(Vector3.new(0, Settings.Distance, 0)) *
-                            CFrame.Angles(-90, 0, 0),
-                        300
-                    )
-                end
-            )
-        end
-    end
-)
-
-spawn(function()
-    while wait() and Settings.Mobs do 
-        pcall(function()
-            Click()
-        end)
-    end 
-end)
-end)
-
-local Dropdown3 = Main:Dropdown("Mobs", Mobs, function(Name)
-    Settings.Mob = Name
-end)
-local Dropdown3 = Main:Dropdown("Kill Method", {"Fist","Sword"}, function(Name)
-    Settings.FightMethod = Name
-end)
-
-Dropdown3:SetOption("Fist")
-Main:Slider("Mob Distance",0,13,Settings.Distance,false, function(Value)
-	Settings.Distance = Value
-end)
-
-
-local Dropdown3 = Main:Dropdown("Teleport To Locations", Locations, function(Name)
-    for i,v in pairs(Beast) do
-        if i == Name then
-            Player.Character.HumanoidRootPart.CFrame = CFrame.new(v) 
-        end 
-    end 
-end)
-
-local Dropdown3 = Main:Dropdown("Teleport To NPCS", NPCS, function(Name)
-    Player.Character.HumanoidRootPart.CFrame = Workspace[Name]:GetModelCFrame()
- end)
-
-Main:Toggle("Rice AutoFarm", Settings.AutoQuest, function(State)
-Settings.AutoQuest = State
-
-RunService.Stepped:connect(
-    function()
-        if Settings.AutoQuest then
-            Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-        end
-    end
-)
-spawn(
-    function()
-        while wait() and Settings.AutoQuest do
-            pcall(
-                function()
-                    if not Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        Tween(Player.Character.HumanoidRootPart, CFrame.new(-109, 282, -1697), 300)
-                        if
-                            (Workspace.Sarah.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).magnitude <
-                                5 and wait()
-                         then
-                            game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game) wait(2)
-                            Player.PlayerGui.Npc_Dialogue.Button_Clicked:Fire(true)
-                        end
-                    elseif Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        for i, v in pairs(Workspace.StarterVillage_RiceStrings:GetChildren()) do
-                            if v:IsA("BasePart") then
-                                repeat
-                                    wait()
-                                    Tween(Player.Character.HumanoidRootPart, CFrame.new(v.Position), 300)
-                                    fireproximityprompt(v:FindFirstChildWhichIsA("ProximityPrompt"))
-                                until not v or v == nil or not Settings.AutoQuest
-                            end
-                        end
-                    end
-                end
-            )
-        end
-    end
-)
-
-end)
-
-Main:Toggle("Wagon AutoFarm", Settings.AutoQuest1, function(State)
-Settings.AutoQuest1 = State
-
-RunService.Stepped:connect(
-    function()
-        if Settings.AutoQuest1 then
-            Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-        end
-    end
-)
-spawn(
-    function()
-        while wait() and Settings.AutoQuest1 do
-            pcall(
-                function()
-                    if not Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        Tween(Player.Character.HumanoidRootPart, CFrame.new(223, 283, -1605), 300)
-                        if
-                            (Workspace["Grandpa Wagwon"].HumanoidRootPart.Position -
-                                Player.Character.HumanoidRootPart.Position).magnitude < 5 and wait()
-                         then
-                            game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game) wait(2)
-                            Player.PlayerGui.Npc_Dialogue.Button_Clicked:Fire(true)
-                        end
-                    elseif Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        Tween(Player.Character.HumanoidRootPart, CFrame.new(Workspace.Wagon_Deposit_Part.Position), 300)
-                    end
-                end
-            )
-        end
-    end
-)
-
-end)
-
-Main:Slider("Change Player Transparency",0,1,nil,false, function(Value)
-	Invis(Value)
-end)
-
-Main:Toggle("Kill Aura", Settings.Troll, function(State)
-Settings.Troll = State
-spawn(
-    function()
-        while wait() and Settings.Troll do
-            pcall(function()
-                Click()
-            end)
-        end
-    end
-)
-end)
-Main:Toggle("Infinite Stamima", Settings.InfiniteStamima, function(State)
-Settings.InfiniteStamima = State
-spawn(
-    function()
-        while Settings.InfiniteStamima do
-            wait()
-            getrenv()._G:AddStamina(9e9)
-        end
-    end
-)
-
-end)
-Main:Toggle("Infinite Breath", Settings.InfiniteStamima2, function(State)
-Settings.InfiniteStamima2 = State
-spawn(
-    function()
-        while Settings.InfiniteStamima2 do
-            wait()
-            getrenv()._G:AddBreath(9e9)
-        end
-    end
-)
-
-end)
-
-
-
 Main:Toggle("AutoFish", Settings.AutoFish, function(State)
 Settings.AutoFish = State
 RunService.Stepped:connect(
@@ -1416,27 +1224,17 @@ RunService.Stepped:connect(
         if Settings.AutoFish then
             Player.Character:WaitForChild("Humanoid"):ChangeState(11)
         end
-    end
-)
-spawn(
-    function()
+    end)
+    
+spawn(function()
         while wait() and Settings.AutoFish do
             if wait(1) then
-                if
-                    not Player.Character:FindFirstChild("Fishing Rod") and
-                        not Player.Backpack:FindFirstChild("Fishing Rod")
-                 then
+                if not Player.Character:FindFirstChild("Fishing Rod") and not Player.Backpack:FindFirstChild("Fishing Rod") then
                     repeat
                         wait()
-                        local a =
-                            (Vector3.new(-523, 275, -3486) - Player.Character.HumanoidRootPart.Position).magnitude / 300
+                        local a = (Vector3.new(-523, 275, -3486) - Player.Character.HumanoidRootPart.Position).magnitude / 300
                         local b = TweenInfo.new(a, Enum.EasingStyle.Linear)
-                        local c =
-                            game:GetService("TweenService"):Create(
-                            Player.Character.HumanoidRootPart,
-                            b,
-                            {CFrame = CFrame.new(-523, 275, -3486)}
-                        )
+                        local c = game:GetService("TweenService"):Create(Player.Character.HumanoidRootPart,b,{CFrame = CFrame.new(-523, 275, -3486)})
                         c:Play()
                         c.Completed:Wait()
                         game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game)
@@ -1451,15 +1249,9 @@ spawn(
                 until Player.Character:FindFirstChild("Fishing Rod")
                 wait(1)
                 if Settings.AutoFish then
-                    local a =
-                        (Vector3.new(678, 274, -2764) - Player.Character.HumanoidRootPart.Position).magnitude / 300
+                    local a = (Vector3.new(678, 274, -2764) - Player.Character.HumanoidRootPart.Position).magnitude / 300
                     local b = TweenInfo.new(a, Enum.EasingStyle.Linear)
-                    local c =
-                        game:GetService("TweenService"):Create(
-                        Player.Character.HumanoidRootPart,
-                        b,
-                        {CFrame = CFrame.new(678, 274, -2764)}
-                    )
+                    local c = game:GetService("TweenService"):Create(Player.Character.HumanoidRootPart,b,{CFrame = CFrame.new(678, 274, -2764)})
                     c:Play()
                     c.Completed:Wait()
                     wait()
@@ -1488,21 +1280,4 @@ spawn(
 )
 
 
-end)
-Main:Toggle("Auto Sell All Fish", Settings.AutoSellFish, function(State)
-Settings.AutoSellFish = State
-spawn(function()
-while Settings.AutoSellFish do
-    local Values = Player.PlayerGui["Npc_Dialogue"]:FindFirstChild("LocalScript")["Tables_Library"]:FindFirstChild("Sell_Fish")["Fishes_Holder"].Values
-    wait()
-    if Values.Ouwfish.Value ~= 0 or Values.Ouwfash.Value ~= 0 or Values.Ouwfwesh.Value ~= 0 then
-    game.ReplicatedStorage.Remotes.Sell_Fish:InvokeServer(
-        Values.Ouwfish.Value,
-        Values.Ouwfash.Value,
-        Values.Ouwfwesh.Value
-    )
-    wait(5)
-    end
-end
-end)
 end)
