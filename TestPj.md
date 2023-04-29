@@ -1063,14 +1063,121 @@ local Invis = function(Number)
     end
 end
 
-local function Tween(A, B, C)
-    if A then
-        local Time = (B.Position - A.Position).magnitude / C
-        local Info = TweenInfo.new(Time, Enum.EasingStyle.Linear)
-        local Tween = game:GetService("TweenService"):Create(A, Info, {CFrame = B})
-        Tween:Play()
+function topos(Pos)
+        Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
+        pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/210, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
+        tween:Play()
+        if Distance <= 250 then
+            tween:Cancel()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
+        end
+        if _G.StopTween == true then
+            tween:Cancel()
+            _G.Clip = false
+        end
     end
+    
+    function GetDistance(target)
+        return math.floor((target.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+    end
+    
+    function TP1(Pos)
+    Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    if Distance < 250 then
+        Speed = 600
+    elseif Distance < 1000 then
+        Speed = 200
+    elseif Distance < 250 then
+        Speed = 600
+    elseif Distance >= 1000 then
+        Speed = 250
+    end
+    game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
+        {CFrame = Pos}
+    ):Play()
 end
+    
+    function TP3(Pos)
+    Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    if Distance < 350 then
+        Speed = 1200000
+    elseif Distance < 1000 then
+        Speed = 350
+    elseif Distance < 250 then
+        Speed = 1200000
+    elseif Distance >= 1000 then
+        Speed = 350
+    end
+    game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
+        {CFrame = Pos}
+    ):Play()
+end
+    
+    function TP(Pos)
+        Distance = (Pos.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+        if Distance < 250 then
+            Speed = 600
+        elseif Distance >= 1000 then
+            Speed = 200
+        end
+        game:GetService("TweenService"):Create(
+            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
+            {CFrame = Pos}
+        ):Play()
+        _G.Clip = true
+        wait(Distance/Speed)
+        _G.Clip = false
+    end
+    
+    spawn(function()
+        pcall(function()
+            while wait() do
+                if Settings.AutoFish == true then
+                    if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+                        local Noclip = Instance.new("BodyVelocity")
+                        Noclip.Name = "BodyClip"
+                        Noclip.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+                        Noclip.MaxForce = Vector3.new(100000,100000,100000)
+                        Noclip.Velocity = Vector3.new(0,0,0)
+                    end
+                end
+            end
+        end)
+    end)
+    
+    spawn(function()
+        pcall(function()
+            game:GetService("RunService").Stepped:Connect(function()
+                if Settings.AutoFish == true then
+                    for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+                        if v:IsA("BasePart") then
+                            v.CanCollide = false    
+                        end
+                    end
+                end
+            end)
+        end)
+    end)
+    
+    function StopTween(target)
+        if not target then
+            _G.StopTween = true
+            wait()
+            topos(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
+            wait()
+            if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
+            end
+            _G.StopTween = false
+            _G.Clip = false
+        end
+    end
 
 local function getNearestMob()
     local TargetDistance = math.huge
@@ -1219,12 +1326,7 @@ Main:Seperator("Auto Farm")
 
 Main:Toggle("AutoFish", Settings.AutoFish, function(State)
 Settings.AutoFish = State
-RunService.Stepped:connect(
-    function()
-        if Settings.AutoFish then
-            Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-        end
-    end)
+end)
     
 spawn(function()
         while wait() and Settings.AutoFish do
@@ -1232,11 +1334,7 @@ spawn(function()
                 if not Player.Character:FindFirstChild("Fishing Rod") and not Player.Backpack:FindFirstChild("Fishing Rod") then
                     repeat
                         wait()
-                        local a = (Vector3.new(-523, 275, -3486) - Player.Character.HumanoidRootPart.Position).magnitude / 300
-                        local b = TweenInfo.new(a, Enum.EasingStyle.Linear)
-                        local c = game:GetService("TweenService"):Create(Player.Character.HumanoidRootPart,b,{CFrame = CFrame.new(-523, 275, -3486)})
-                        c:Play()
-                        c.Completed:Wait()
+                        topos(CFrame.new(-523, 275, -3486))
                         game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game)
                         wait(2)
                         Player.PlayerGui.Npc_Dialogue.Button_Clicked:Fire(true)
@@ -1249,11 +1347,7 @@ spawn(function()
                 until Player.Character:FindFirstChild("Fishing Rod")
                 wait(1)
                 if Settings.AutoFish then
-                    local a = (Vector3.new(678, 274, -2764) - Player.Character.HumanoidRootPart.Position).magnitude / 300
-                    local b = TweenInfo.new(a, Enum.EasingStyle.Linear)
-                    local c = game:GetService("TweenService"):Create(Player.Character.HumanoidRootPart,b,{CFrame = CFrame.new(678, 274, -2764)})
-                    c:Play()
-                    c.Completed:Wait()
+                    topos(CFrame.new(678, 274, -2764))
                     wait()
                     Player.Character["Fishing Rod"]:Activate()
                     repeat
