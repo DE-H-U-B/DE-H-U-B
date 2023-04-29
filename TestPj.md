@@ -1,11 +1,3 @@
-getgenv().Games = {
-    [8908228901] = "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Shark-2",
-    [11187148979] = "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Ultra-Unfair",
-    [9224601490] = "https://raw.githubusercontent.com/1201for/V.G-Hub/main/Games/FruitBattleGrounds",
-    [6679968919] = "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Fly-Race",
-    [10320676839] = "https://raw.githubusercontent.com/1201for/V.G-Hub/main/Project-XXL"
-}
-
 getgenv().Unknown = {
     "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/War",
     "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/DBFR-Worlds",
@@ -36,24 +28,4 @@ getgenv().Unknown = {
     "https://raw.githubusercontent.com/1201for/V.G-hub-Part-Two/main/the-final-Stand-w0rlds",
     "https://raw.githubusercontent.com/1201for/V.G-hub-Part-Two/main/DemonFall-Worlds",
     "https://raw.githubusercontent.com/1201for/V.G-Hub/main/The%20Asylum%20worlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/breaking%20point%20worlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/ZombieUprising-worlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/zombie-rushworlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/break%20in%20servers",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/assassinworlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/GetAllHats",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/Shindo",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/Games/Dragon-Adventures",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/Dungeon%20Quest%20worlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/ElementalBattlegroundsworlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/feildtripzworlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/superbombsurivalworlds",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub/main/zombieworlds",
-    "https://raw.githubusercontent.com/1201for/dragonadventures/main/FUCK",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/A-OnePeiceGame",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Evade",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Roblox-UNbreakable",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Bloxburg",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/Anime-Story",
-    "https://raw.githubusercontent.com/1201for/V.G-Hub-Part-3/main/AO",
 }
