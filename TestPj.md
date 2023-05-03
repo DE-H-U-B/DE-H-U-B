@@ -162,7 +162,7 @@ function Update:Window(text,logo,keybind)
 	Hub.Position = UDim2.new(0, 110, 0, 0)
 	Hub.Size = UDim2.new(0, 81, 0, 27)
 	Hub.Font = Enum.Font.GothamSemibold
-	Hub.Text = "    | BF | FREE SCRIPT"
+	Hub.Text = "            | BF | FREE SCRIPT"
 	Hub.TextColor3 = _G.Color
 	Hub.TextSize = 17.000
 	Hub.TextXAlignment = Enum.TextXAlignment.Left
@@ -2326,7 +2326,7 @@ MODILEGUISOMEXHUB.MouseButton1Click:Connect(function()
 game.CoreGui:FindFirstChild("SOMEXHUB").Enabled = not game.CoreGui:FindFirstChild("SOMEXHUB").Enabled
 end)
 
-local Library = Update:Window("    Rainbow HUB ","",Enum.KeyCode.RightControl)
+local Library = Update:Window("           Rainbow NaJa ","",Enum.KeyCode.RightControl)
 Main = Library:Tab("Main")
 
 Main:Line()
@@ -8073,7 +8073,7 @@ task.spawn(function()
                 for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
                     if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 500 then --not string.find(v.Name,"Boss") and 
                         if InMyNetWork(v.HumanoidRootPart) then
-                            v.HumanoidRootPart.CFrame = Mon
+                            v.HumanoidRootPart.CFrame = PosMon
                             v.Humanoid.JumpPower = 0
                             v.Humanoid.WalkSpeed = 0
                             v.Humanoid.NameDisplayDistance = 0
@@ -8117,14 +8117,146 @@ function InMyNetWork(L_88_arg0)
     end
 end
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/Fastlol.lua"))()
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/OBF-Fast.lua"))() -- fast |  ตีเร็ว
+
+Settings:Toggle("Fast Attack",true,function(value)
+_G.FastAttackNormalPC = value
+end)
+
 Settings:Toggle("Fast Attack (Mobile)",false,function(value)
 _G.FastAttack = value
-end)      
+end)
+
+    local Module = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+    local CombatFramework = debug.getupvalues(Module)[2]
+    local CameraShakerR = require(game.ReplicatedStorage.Util.CameraShaker)
+spawn(function()
+    while true do
+        if _G.FastAttack then
+            pcall(function()
+                CameraShakerR:Stop()
+                CombatFramework.activeController.attacking = false
+                CombatFramework.activeController.timeToNextAttack = 0 --0
+                CombatFramework.activeController.increment = 4  --3
+                CombatFramework.activeController.hitboxMagnitude = 95
+                CombatFramework.activeController.blocking = false
+                CombatFramework.activeController.timeToNextBlock = 0 --0
+                CombatFramework.activeController.focusStart = 0
+                CombatFramework.activeController.humanoid.AutoRotate = true
+            end)
+        end
+        task.wait(0.0)
+    end
+end)
 
 Settings:Toggle("Super Fast Attack (Pc)",false,function(value)
+getgenv().Fast = value
 _G.SupFastAttack = value
 _G.SupGodFastAttack = value
-end)      
+end)
+
+local Client = game.Players.LocalPlayer
+    local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
+    local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
+    spawn(function()
+        while task.wait() do
+            if _G.FastAttack then
+                pcall(function()
+                    if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
+                    if not shared.cpc then shared.cpc = STOP.play end
+                        STOPRL.wrapAttackAnimationAsync = function(a,b,c,d,func)
+                        local Hits = STOPRL.getBladeHits(b,c,d)
+                        if Hits then
+                            STOP.play = function() end
+                            a:Play(0.01,0.01,0.01)
+                            func(Hits)
+                            STOP.play = shared.cpc
+                            wait(a.length * 0.5)
+                            a:Stop()
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+    
+spawn(function()
+    while wait(.3) do
+        if _G.FastAttack then
+            pcall(function()
+                wait(.5)
+                --AttackPlayersFunction()
+                --KoAttackOK()
+                --AttackAC()
+                AttackOK()
+                wait()
+            end)
+        end
+    end
+end)
+
+	local plr = game.Players.LocalPlayer
+	local CbFw = getupvalues(require(plr.PlayerScripts.CombatFramework))
+	local CbFw2 = CbFw[2]
+
+    function GetCurrentBlade() 
+        local p13 = CbFw2.activeController
+        local ret = p13.blades[1]
+        if not ret then return end
+        while ret.Parent~=game.Players.LocalPlayer.Character do ret=ret.Parent end
+        return ret
+    end
+
+    spawn(function()
+        while task.wait(0.175) do
+            if _G.FastAttackNormalPC then
+                pcall(function()
+                    local AC = CbFw2.activeController
+                    for i = 1,1 do 
+                        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
+                            plr.Character,
+                            {plr.Character.HumanoidRootPart},
+                            60
+                        )
+                        local cac = {}
+                        local hash = {}
+                        for k, v in pairs(bladehit) do
+                            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
+                                table.insert(cac, v.Parent.HumanoidRootPart)
+                                hash[v.Parent] = true
+                            end
+                        end
+                        bladehit = cac
+                        if #bladehit > 0 then
+                            local u8 = debug.getupvalue(AC.attack, 5)
+                            local u9 = debug.getupvalue(AC.attack, 6)
+                            local u7 = debug.getupvalue(AC.attack, 4)
+                            local u10 = debug.getupvalue(AC.attack, 7)
+                            local u12 = (u8 * 798405 + u7 * 727595) % u9
+                            local u13 = u7 * 798405
+                            (function()
+                                u12 = (u12 * u9 + u13) % 1099511627776
+                                u8 = math.floor(u12 / u9)
+                                u7 = u12 - u8 * u9
+                            end)()
+                            u10 = u10 + 1
+                            debug.setupvalue(AC.attack, 5, u8)
+                            debug.setupvalue(AC.attack, 6, u9)
+                            debug.setupvalue(AC.attack, 4, u7)
+                            debug.setupvalue(AC.attack, 7, u10)
+                            if plr.Character:FindFirstChildOfClass("Tool") and AC.blades and AC.blades[1] then 
+                                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetCurrentBlade()))
+                                --game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
+                                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "") 
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
 
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
@@ -8240,7 +8372,6 @@ end)
  wait(.1)
 end)
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/Fastlol.lua"))()
 else
     game.Players.LocalPlayer:Kick("Error Code 404")
     wait(5)
