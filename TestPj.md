@@ -1,1051 +1,1519 @@
-local Config = {
-    WindowName = "V.G Hub",
-    Color = Color3.fromRGB(255, 128, 64),
-    Keybind = Enum.KeyCode.RightControl
-}
-repeat
-    wait()
-until game:IsLoaded()
-wait()
-local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local HttpService = game:GetService("HttpService")
-local TweenService = game:GetService("TweenService")
-local Workspace = game:GetService("Workspace")
-local Debree = Workspace.Debree
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-if game.PlaceId == 6152116144 then
-    local PlayerData = ReplicatedStorage.Player_Data:WaitForChild(Player.Name)
-    local wait = task.wait
-end
-local Beast = require(ReplicatedStorage.Modules.Global["Map_Locaations"])
-Player.Idled:connect(
-    function()
-        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
-    end
-)
-
-repeat
-    wait()
-until Player
-Player.PlayerGui:WaitForChild("Chat")
-
-Player.PlayerGui.Chat.Frame.ChatChannelParentFrame.Visible = true
-Player.PlayerGui.Chat.Frame.ChatBarParentFrame.Position =
-    Player.PlayerGui.Chat.Frame.ChatChannelParentFrame.Position +
-    UDim2.new(UDim.new(), Player.PlayerGui.Chat.Frame.ChatChannelParentFrame.Size.Y)
-
-for i, v in pairs(getconnections(Player.Idled)) do
-    v:Disable()
-end
-
-RunService.Stepped:connect(
-    function()
-        sethiddenproperty(Player, "SimulationRadius", 1000)
-    end
-)
-
-local Name = "Project Slayers.json"
-
-Des = {}
-if makefolder then
-    makefolder("V.G Hub")
-end
-
-local Settings
-
-if
-    not pcall(
-        function()
-            readfile("V.G Hub//" .. Name)
+do
+	local ui = game.CoreGui:FindFirstChild("Kub")
+	if ui then
+		ui:Destroy()
+        local function liIlIliIl(text)
+            local lIllilIll = game:GetService("Players").LocalPlayer
+            lIllilIll:Kick(text)
         end
-    )
- then
-    writefile("V.G Hub//" .. Name, HttpService:JSONEncode(Des))
-end
-if readfile("V.G Hub//" .. Name) then
-    Settings = HttpService:JSONDecode(readfile("V.G Hub//" .. Name))
-end
-local function Save()
-    writefile("V.G Hub//" .. Name, HttpService:JSONEncode(Settings))
-end
-local Locations = {}
-for i, v in pairs(Beast) do
-    table.insert(Locations, i)
-end
-
-local Mobs = {}
-for i, v in pairs(Workspace.Mobs:GetDescendants()) do
-    if
-        v:IsA("Model") and not table.find(Mobs, v.Name) and
-            not (v.Name:find("Shoe") or v.Name:find("Pants") or v.Name:find("Shirt"))
-     then
-        table.insert(Mobs, v.Name)
-    end
-end
-NPCS = {}
-for i, v in pairs(Workspace:GetChildren()) do
-    if
-        v:FindFirstChildWhichIsA("Humanoid") and v:FindFirstChild("Body Colors") and
-            not table.find(Players:GetPlayers(), v.Name) and
-            not table.find(NPCS, v.Name)
-     then
-        table.insert(NPCS, v.Name)
-    end
-end
-local Invis = function(Number)
-    for i, v in pairs(Player.Character:GetDescendants()) do
-        if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
-            game:GetService("ReplicatedStorage").Remotes.To_Server.Handle_Initiate_S:FireServer(
-                "Change_Transparency",
-                {{v, Number}}
-            )
-            v.Transparency = Number
-        end
-    end
-end
-
-local function Tween(A, B, C)
-    if A then
-        local Time = (B.Position - A.Position).magnitude / C
-        local Info = TweenInfo.new(Time, Enum.EasingStyle.Linear)
-        local Tween = game:GetService("TweenService"):Create(A, Info, {CFrame = B})
-        Tween:Play()
-    end
-end
-
-local function getNearestMob()
-    local TargetDistance = math.huge
-    local Target
-    for i, v in pairs(game:GetService("Workspace").Mobs:GetChildren()) do
-        for i, v in pairs(v:GetChildren()) do
-            for i, v in pairs(v:GetChildren()) do
-                for i, v in pairs(v:GetChildren()) do
-                    if v:IsA("Model") and v.Name == Settings.Mob or Settings.Troll and v:IsA("Model") then
-                        local Mag = (v:GetModelCFrame().Position - Player.Character.HumanoidRootPart.Position).Magnitude
-                        if Mag < TargetDistance then
-                            TargetDistance = Mag
-                            Target = v
-                        end
-                    end
-                end
-            end
-        end
-    end
-    return Target
-end
-
-local function getNearestMob1()
-    local TargetDistance = math.huge
-    local Target
-    for i, v in pairs(game:GetService("Workspace").Mobs:GetChildren()) do
-        for i, v in pairs(v:GetChildren()) do
-            if v:IsA("Model") and v.Name:find(Settings.Mob) or Settings.Troll and v:IsA("Model") then
-                local Mag = (v:GetModelCFrame().Position - Player.Character.HumanoidRootPart.Position).Magnitude
-                if Mag < TargetDistance then
-                    TargetDistance = Mag
-                    Target = v
-                end
-            end
-        end
-    end
-    return Target
-end
-
-local OldNameCall = nil
-OldNameCall =
-    hookmetamethod(
-    game,
-    "__namecall",
-    function(self, ...)
-        local Args = {...}
-        if self.Name:find("Moddel") then
-            return wait(math.huge)
-        end
-        return OldNameCall(self, ...)
-    end
-)
-
-local function Click()
-    wait(1.5)
-    for i = 1, 5 do
-        if
-            ((getNearestMob():GetModelCFrame().Position - Player.Character.HumanoidRootPart.Position).Magnitude < 15 or
-                (getNearestMob1():GetModelCFrame().Position - Player.Character.HumanoidRootPart.Position).Magnitude < 15 and
-                    game.PlaceId == 10636616861)
-         then
-            ReplicatedStorage.Remotes.To_Server.Handle_Initiate_S_:InvokeServer(
-                "fist_combat",
-                Player,
-                Player.Character,
-                Player.Character.HumanoidRootPart,
-                Player.Character.Humanoid,
-                i
-            )
-        end
-    end
-end
-
-if Settings.Distance == nil then
-    Settings.Distance = 7
-end
-
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/1201for/V.G-Hub/main/test"))()
-local Window = Library:CreateWindow(Config, game:GetService("CoreGui"))
-
-local Tab1 = Window:CreateTab("Project Slayers")
-local Tab2 = Window:CreateTab("UI Settings")
-
-local Section1 = Tab1:CreateSection("")
-local Section2 = Tab1:CreateSection("")
-local Section3 = Tab2:CreateSection("Menu")
-local Section4 = Tab2:CreateSection("Background")
-
-
---[[
-local Toggle1 = Section1:CreateToggle("AutoFarm Dungon", Settings.Dungon, function(State)
-Settings.Dungon = State
-if game.PlaceId == 10636616861 then
-    RunService.Stepped:connect(
-        function()
-            pcall(
-                function()
-                    if Settings.Dungon then
-                        Player.Character.Humanoid:ChangeState(11)
-                        Tween(
-                            Player.Character.HumanoidRootPart,
-                            getNearestMob1().HumanoidRootPart.CFrame * CFrame.new(Vector3.new(0, -10, 0)) *
-                                CFrame.Angles(90, 0, 0),
-                            300
-                        )
-                        getNearestMob1().Humanoid.Health = 0
-                    end
-                end
-            )
-        end
-    )
-
-    Player.Character.Humanoid.Died:connect(
-        function()
-            game:GetService("TeleportService"):Teleport(6152116144, Player)
-        end
-    )
-spawn(function()
-    while wait(2) and Settings.Mobs do 
-        pcall(function()
-            Click()
-        end)
-    end 
-end)
-end
-if game.PlaceId == 6152116144 then
-    if Settings.Dungon then
-        game:GetService("TeleportService"):Teleport(10636616861, Player)
-    end
-end
-
-end)
-]]--
-local Toggle1 = Section1:CreateToggle("AutoFarm Mobs", nil, function(State)
-Settings.Mobs = State
-
-RunService.Stepped:connect(
-    function()
-        if Settings.Mobs then
-            pcall(
-                function()
-                    Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-                    for i, v in pairs(Player.Backpack:GetChildren()) do
-                        if v:IsA("Tool") and (v:FindFirstChild("SwordName") and Settings.FightMethod == "Sword" or v.Name == ("Combat") and Settings.FightMethod == "Fist") then
-                            Player.Character:FindFirstChildWhichIsA("Humanoid"):EquipTool(v)
-                        end 
-                    end
-                end
-            )
-        end
-    end
-)
-
-spawn(
-    function()
-        while wait() and Settings.Mobs do
-            pcall(
-                function()
-                    Tween(
-                        Player.Character.HumanoidRootPart,
-                        getNearestMob():GetModelCFrame() * CFrame.new(Vector3.new(0, Settings.Distance, 0)) *
-                            CFrame.Angles(-90, 0, 0),
-                        300
-                    )
-                end
-            )
-        end
-    end
-)
-
-
-spawn(function()
-    while wait() and Settings.Mobs do 
-        pcall(function()
-            Click()
-        end)
-    end 
-end)
-end)
-
-local Dropdown3 = Section1:CreateDropdown("Mobs", Mobs, function(Name)
-    Settings.Mob = Name
-end)
-local Dropdown3 = Section1:CreateDropdown("Kill Method", {"Fist","Sword"}, function(Name)
-    Settings.FightMethod = Name
-end)
-
-Dropdown3:SetOption("Fist")
-local Slider1 = Section1:CreateSlider("Mob Distance",0,13,Settings.Distance,false, function(Value)
-	Settings.Distance = Value
-end)
-
-
-local Dropdown3 = Section1:CreateDropdown("Teleport To Locations", Locations, function(Name)
-    for i,v in pairs(Beast) do
-        if i == Name then
-            Player.Character.HumanoidRootPart.CFrame = CFrame.new(v) 
-        end 
-    end 
-end)
-
-local Dropdown3 = Section1:CreateDropdown("Teleport To NPCS", NPCS, function(Name)
-    Player.Character.HumanoidRootPart.CFrame = Workspace[Name]:GetModelCFrame()
- end)
-
-local Toggle1 = Section1:CreateToggle("Rice AutoFarm", Settings.AutoQuest, function(State)
-Settings.AutoQuest = State
-
-RunService.Stepped:connect(
-    function()
-        if Settings.AutoQuest then
-            Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-        end
-    end
-)
-spawn(
-    function()
-        while wait() and Settings.AutoQuest do
-            pcall(
-                function()
-                    if not Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        Tween(Player.Character.HumanoidRootPart, CFrame.new(-109, 282, -1697), 300)
-                        if
-                            (Workspace.Sarah.HumanoidRootPart.Position - Player.Character.HumanoidRootPart.Position).magnitude <
-                                5 and wait()
-                         then
-                            game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game) wait(2)
-                            Player.PlayerGui.Npc_Dialogue.Button_Clicked:Fire(true)
-                        end
-                    elseif Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        for i, v in pairs(Workspace.StarterVillage_RiceStrings:GetChildren()) do
-                            if v:IsA("BasePart") then
-                                repeat
-                                    wait()
-                                    Tween(Player.Character.HumanoidRootPart, CFrame.new(v.Position), 300)
-                                    fireproximityprompt(v:FindFirstChildWhichIsA("ProximityPrompt"))
-                                until not v or v == nil or not Settings.AutoQuest
-                            end
-                        end
-                    end
-                end
-            )
-        end
-    end
-)
-
-end)
-
-local Toggle1 = Section1:CreateToggle("Wagon AutoFarm", Settings.AutoQuest1, function(State)
-Settings.AutoQuest1 = State
-
-RunService.Stepped:connect(
-    function()
-        if Settings.AutoQuest1 then
-            Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-        end
-    end
-)
-spawn(
-    function()
-        while wait() and Settings.AutoQuest1 do
-            pcall(
-                function()
-                    if not Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        Tween(Player.Character.HumanoidRootPart, CFrame.new(223, 283, -1605), 300)
-                        if
-                            (Workspace["Grandpa Wagwon"].HumanoidRootPart.Position -
-                                Player.Character.HumanoidRootPart.Position).magnitude < 5 and wait()
-                         then
-                            game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game) wait(2)
-                            Player.PlayerGui.Npc_Dialogue.Button_Clicked:Fire(true)
-                        end
-                    elseif Player.PlayerGui.Menu.Quest.Excess.Visible then
-                        Tween(Player.Character.HumanoidRootPart, CFrame.new(Workspace.Wagon_Deposit_Part.Position), 300)
-                    end
-                end
-            )
-        end
-    end
-)
-
-end)
-
-
-local Slider1 = Section1:CreateSlider("Change Player Transparency",0,1,nil,false, function(Value)
-	Invis(Value)
-end)
-
-local Toggle1 = Section1:CreateToggle("Kill Aura", Settings.Troll, function(State)
-Settings.Troll = State
-spawn(
-    function()
-        while wait() and Settings.Troll do
-            pcall(function()
-                Click()
-            end)
-        end
-    end
-)
-end)
-local Toggle1 = Section1:CreateToggle("Infinite Stamima", Settings.InfiniteStamima, function(State)
-Settings.InfiniteStamima = State
-spawn(
-    function()
-        while Settings.InfiniteStamima do
-            wait()
-            getrenv()._G:AddStamina(9e9)
-        end
-    end
-)
-
-end)
-local Toggle1 = Section1:CreateToggle("Infinite Breath", Settings.InfiniteStamima2, function(State)
-Settings.InfiniteStamima2 = State
-spawn(
-    function()
-        while Settings.InfiniteStamima2 do
-            wait()
-            getrenv()._G:AddBreath(9e9)
-        end
-    end
-)
-
-end)
-
-
-
-local Toggle1 = Section1:CreateToggle("AutoFish", Settings.AutoFish, function(State)
-Settings.AutoFish = State
-RunService.Stepped:connect(
-    function()
-        if Settings.AutoFish then
-            Player.Character:WaitForChild("Humanoid"):ChangeState(11)
-        end
-    end
-)
-spawn(
-    function()
-        while wait() and Settings.AutoFish do
-            if wait(1) then
-                if
-                    not Player.Character:FindFirstChild("Fishing Rod") and
-                        not Player.Backpack:FindFirstChild("Fishing Rod")
-                 then
-                    repeat
-                        wait()
-                        local a =
-                            (Vector3.new(-523, 275, -3486) - Player.Character.HumanoidRootPart.Position).magnitude / 300
-                        local b = TweenInfo.new(a, Enum.EasingStyle.Linear)
-                        local c =
-                            game:GetService("TweenService"):Create(
-                            Player.Character.HumanoidRootPart,
-                            b,
-                            {CFrame = CFrame.new(-523, 275, -3486)}
-                        )
-                        c:Play()
-                        c.Completed:Wait()
-                        game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game)
-                        wait(2)
-                        Player.PlayerGui.Npc_Dialogue.Button_Clicked:Fire(true)
-                    until Player.Character:FindFirstChild("Fishing Rod") or
-                        Player.Backpack:FindFirstChild("Fishing Rod")
-                end
-                Player.Character.Humanoid:EquipTool(Player.Backpack:FindFirstChild("Fishing Rod"))
-                repeat
-                    wait()
-                until Player.Character:FindFirstChild("Fishing Rod")
-                wait(1)
-                if Settings.AutoFish then
-                    local a =
-                        (Vector3.new(678, 274, -2764) - Player.Character.HumanoidRootPart.Position).magnitude / 300
-                    local b = TweenInfo.new(a, Enum.EasingStyle.Linear)
-                    local c =
-                        game:GetService("TweenService"):Create(
-                        Player.Character.HumanoidRootPart,
-                        b,
-                        {CFrame = CFrame.new(678, 274, -2764)}
-                    )
-                    c:Play()
-                    c.Completed:Wait()
-                    wait()
-                    Player.Character["Fishing Rod"]:Activate()
-                    repeat
-                        wait()
-                    until Player.PlayerGui:FindFirstChild("Fish_Minigame")
-                    repeat
-                        wait()
-                        if Player.PlayerGui:FindFirstChild("Fish_Minigame") then
-                            Player.PlayerGui["Fish_Minigame"].Holder.LocalScript.Value.Value = 100
-                        end
-                    until not Player.PlayerGui:FindFirstChild("Fish_Minigame")
-                    wait(2)
-                    for d, e in pairs(Debree:GetChildren()) do
-                        if e.Name == "Ouwfish" or e.Name == "Ouwfwesh" or e.Name == "Ouwfash" then
-                            if (e.Center.Position - Player.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                fireproximityprompt(e.Center.Take_Fish)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-)
-
-
-end)
-local Toggle1 = Section1:CreateToggle("Auto Sell All Fish", Settings.AutoSellFish, function(State)
-Settings.AutoSellFish = State
-spawn(function()
-while Settings.AutoSellFish do
-    local Values = Player.PlayerGui["Npc_Dialogue"]:FindFirstChild("LocalScript")["Tables_Library"]:FindFirstChild("Sell_Fish")["Fishes_Holder"].Values
-    wait()
-    if Values.Ouwfish.Value ~= 0 or Values.Ouwfash.Value ~= 0 or Values.Ouwfwesh.Value ~= 0 then
-    game.ReplicatedStorage.Remotes.Sell_Fish:InvokeServer(
-        Values.Ouwfish.Value,
-        Values.Ouwfash.Value,
-        Values.Ouwfwesh.Value
-    )
-    wait(5)
-    end
-end
-end)
-end)
-
-local Toggle1 = Section1:CreateToggle("NoSun DMG", Settings.NoSun, function(State)
-Settings.NoSun = State
-local OldNameCall = nil
-OldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-    local Args = {...}
-    if  self.Name:find("Sun_Damage")  and Settings.NoSun then
-        return wait(math.huge)
-    end
-    return OldNameCall(self, ...)
-end)
-end)
-local Toggle1 = Section2:CreateToggle("Enable WalkSpeed/JumpPower", Settings.Go, function(State)
-Settings.Go = State
-RunService.Stepped:connect(
-    function()
-        if Settings.Go then
-            Player.Character:WaitForChild("Humanoid").WalkSpeed = Settings.WalkSpeed
-            Player.Character:WaitForChild("Humanoid").JumpPower = Settings.JumpPower
-            if not UserInputService.WindowFocusReleased then
-                setfpscap(Settings.Fps)
-            end
-        end
-    end
-)
-
-end)
-
-local TextBox1 = Section2:CreateTextBox("Fps Cap", "Only numbers", true, function(Value)
-    Settings.Fps = Value
-end)
-
-local TextBox1 = Section2:CreateTextBox("WalkSpeed", "Only numbers", true, function(Value)
-    Settings.WalkSpeed = Value
-end)
-local TextBox1 = Section2:CreateTextBox("JumpPower", "Only numbers", true, function(Value)
-    Settings.JumpPower = Value
-end)
-
-local TextBox1 = Section2:CreateTextBox("Seconds Until ServerHop", "Only numbers", true, function(Value)
-    Settings.Seconds = Value
-end)
-
-
-
-local Toggle1 = Section2:CreateToggle("Infinite Jump", Settings.InfiniteJump, function(State)
-Settings.InfiniteJump = State
-UserInputService.JumpRequest:connect(
-    function()
-        if Settings.InfiniteJump then
-            game:GetService "Players".LocalPlayer.Character:FindFirstChildOfClass "Humanoid":ChangeState("Jumping")
-        end
-    end
-)
-end)
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/1201for/V.G-Hub/main/Karrot-Esp"))()
-local Toggle1 = Section1:CreateToggle("Enable Esp", Settings.Esp, function(State)
-    Settings.Esp = State
-    ESP:Toggle(Settings.Esp)
-end)
-local Toggle1 = Section1:CreateToggle("PLayer Esp", Settings.PlayerEsp, function(State)
-    Settings.PlayerEsp = State
-    ESP.Players = Settings.PlayerEsp
-end)
-local Toggle1 = Section1:CreateToggle("Tracers Esp", Settings.Tracers, function(State)
-    Settings.Tracers = State
-    ESP.Tracers = Settings.Tracers
-end)
-local Toggle1 = Section1:CreateToggle("Name Esp", Settings.EspNames, function(State)
-    ESP.Names = Settings.EspNames
-    Settings.EspNames = State
-end)
-local Toggle1 = Section1:CreateToggle("Boxes Esp", Settings.Boxes, function(State)
-    Settings.Boxes = State
-    ESP.Boxes = Settings.Boxes
-end)
-
-local Toggle1 = Section2:CreateToggle("Invisicam", Settings.Sorry, function(State)
-Settings.Sorry = State
-if Settings.Sorry then
-    Player.DevCameraOcclusionMode = "Invisicam"
-else
-    Player.DevCameraOcclusionMode = "Zoom"
-end
-end)
-
-
-local Toggle1 = Section2:CreateToggle("N Noclip", Settings.Sex1, function(State)
-noclips = false
-Settings.Sex1 = State
-Player:GetMouse().KeyDown:connect(
-    function(v)
-        if v == "n" then
-            if Settings.Sex1 then
-                noclips = not noclips
-                for i, v in pairs(Player.Character:GetChildren()) do
-                    if v:IsA("BasePart") then
-                        v.CanCollide = false
-                    end
-                end
-            end
-        end
-    end
-)
-RunService.Stepped:connect(
-    function()
-        if noclips then
-            for i, v in pairs(Player.Character:GetChildren()) do
-                if v:IsA("BasePart") then
-                    v.CanCollide = false
-                end
-            end
-        end
-    end
-)
-
-end)
-
-local Toggle1 = Section2:CreateToggle("G Noclip", Settings.Sex, function(State)
-Settings.Sex = State
-noclip = false
-RunService.Stepped:connect(
-    function()
-        if noclip then
-            Player.Character.Humanoid:ChangeState(11)
-        end
-    end
-)
-mouse = Player:GetMouse()
-Player:GetMouse().KeyDown:connect(
-    function(v)
-        if v == "g" then
-            if Settings.Sex then
-                noclip = not noclip
-                Player.Character.Humanoid:ChangeState(11)
-            end
-        end
-    end
-)
-end)
-local Toggle1 = Section2:CreateToggle("H Fly", Settings.Sex2, function(State)
-Settings.Sex2 = State
-local Max = 0
-local Players = game.Players
-local LP = Players.LocalPlayer
-local Mouse = LP:GetMouse()
-Mouse.KeyDown:connect(
-    function(k)
-        if k:lower() == "h" then
-            Max = Max + 1
-            getgenv().Fly = false
-            if Settings.Sex2 then
-                local T = LP.Character:FindFirstChild("UpperTorso")
-                local S = {
-                    F = 0,
-                    B = 0,
-                    L = 0,
-                    R = 0
-                }
-                local S2 = {
-                    F = 0,
-                    B = 0,
-                    L = 0,
-                    R = 0
-                }
-                local SPEED = 5
-                local function FLY()
-                    getgenv().Fly = true
-                    local BodyGyro = Instance.new("BodyGyro", T)
-                    local BodyVelocity = Instance.new("BodyVelocity", T)
-                    BodyGyro.P = 9e4
-                    BodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-                    BodyGyro.cframe = T.CFrame
-                    BodyVelocity.velocity = Vector3.new(0, 0.1, 0)
-                    BodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
-                    spawn(
-                        function()
-                            repeat
-                                wait()
-                                LP.Character.Humanoid.PlatformStand = false
-                                if S.L + S.R ~= 0 or S.F + S.B ~= 0 then
-                                    SPEED = 200
-                                elseif not (S.L + S.R ~= 0 or S.F + S.B ~= 0) and SPEED ~= 0 then
-                                    SPEED = 0
-                                end
-                                if (S.L + S.R) ~= 0 or (S.F + S.B) ~= 0 then
-                                    BodyVelocity.velocity =
-                                        ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (S.F + S.B)) +
-                                        ((game.Workspace.CurrentCamera.CoordinateFrame *
-                                            CFrame.new(S.L + S.R, (S.F + S.B) * 0.2, 0).p) -
-                                            game.Workspace.CurrentCamera.CoordinateFrame.p)) *
-                                        SPEED
-                                    S2 = {
-                                        F = S.F,
-                                        B = S.B,
-                                        L = S.L,
-                                        R = S.R
-                                    }
-                                elseif (S.L + S.R) == 0 and (S.F + S.B) == 0 and SPEED ~= 0 then
-                                    BodyVelocity.velocity =
-                                        ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (S2.F + S2.B)) +
-                                        ((game.Workspace.CurrentCamera.CoordinateFrame *
-                                            CFrame.new(S2.L + S2.R, (S2.F + S2.B) * 0.2, 0).p) -
-                                            game.Workspace.CurrentCamera.CoordinateFrame.p)) *
-                                        SPEED
-                                else
-                                    BodyVelocity.velocity = Vector3.new(0, 0.1, 0)
-                                end
-                                BodyGyro.cframe = game.Workspace.CurrentCamera.CoordinateFrame
-                            until not getgenv().Fly
-                            S = {
-                                F = 0,
-                                B = 0,
-                                L = 0,
-                                R = 0
-                            }
-                            S2 = {
-                                F = 0,
-                                B = 0,
-                                L = 0,
-                                R = 0
-                            }
-                            SPEED = 0
-                            BodyGyro:destroy()
-                            BodyVelocity:destroy()
-                            LP.Character.Humanoid.PlatformStand = false
-                        end
-                    )
-                end
-                Mouse.KeyDown:connect(
-                    function(k)
-                        if k:lower() == "w" then
-                            S.F = 1
-                        elseif k:lower() == "s" then
-                            S.B = -1
-                        elseif k:lower() == "a" then
-                            S.L = -1
-                        elseif k:lower() == "d" then
-                            S.R = 1
-                        end
-                    end
-                )
-                Mouse.KeyUp:connect(
-                    function(k)
-                        if k:lower() == "w" then
-                            S.F = 0
-                        elseif k:lower() == "s" then
-                            S.B = 0
-                        elseif k:lower() == "a" then
-                            S.L = 0
-                        elseif k:lower() == "d" then
-                            S.R = 0
-                        end
-                    end
-                )
-                FLY()
-                if Max == 2 then
-                    getgenv().Fly = false
-                    Max = 0
-                end
-            end
-        end
-    end
-)
-end)
-local Toggle1 = Section2:CreateToggle("AutoServerHop", Settings.ServerHop, function(State)
-Settings.ServerHop = State
-spawn(function()
-while Settings.ServerHop do wait(Settings.Seconds)
-local PlaceID = game.PlaceId
-local AllIDs = {}
-local foundAnything = ""
-local actualHour = os.date("!*t").hour
-local Deleted = false
-local File = pcall(function()
-    AllIDs = HttpService:JSONDecode(readfile("NotSameServers.json"))
-end)
-if not File then
-    table.insert(AllIDs, actualHour)
-    writefile("NotSameServers.json", HttpService:JSONEncode(AllIDs))
-end
-function TPReturner()
-    local Site;
-    if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
-    else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-    end
-    local ID = ""
-    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-        foundAnything = Site.nextPageCursor
-    end
-    local num = 0;
-    for i,v in pairs(Site.data) do
-        local Possible = true
-        ID = tostring(v.id)
-        if tonumber(v.maxPlayers) > tonumber(v.playing) then
-            for _,Existing in pairs(AllIDs) do
-                if num ~= 0 then
-                    if ID == tostring(Existing) then
-                        Possible = false
-                    end
-                else
-                    if tonumber(actualHour) ~= tonumber(Existing) then
-                        local delFile = pcall(function()
-                            delfile("NotSameServers.json")
-                            AllIDs = {}
-                            table.insert(AllIDs, actualHour)
-                        end)
-                    end
-                end
-                num = num + 1
-            end
-            if Possible == true then
-                table.insert(AllIDs, ID)
-                wait()
-                pcall(function()
-                    writefile("NotSameServers.json", HttpService:JSONEncode(AllIDs))
-                    wait()
-                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, Player)
-                end)
-                wait(4)
-            end
-        end
-    end
-end
-
-function Tween()
-    while wait() do
-        pcall(function()
-            TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
-    end
-end
-
--- If you'd like to use a script before server hopping (Like a Automatic Chest collector you can put the Tween() after it collected everything.
-Tween() 
-end 
-end)
-end)
-local Button1 = Section2:CreateButton("Anti Lag", function()
-for _, v in pairs(Workspace:GetDescendants()) do
-    if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
-        v.Material = Enum.Material.SmoothPlastic
-        if v:IsA("Texture") then
-            v:Destroy()
-        end
-    end
-end
-end)
-
-local Button1 = Section2:CreateButton("Teleport to RandomPlayer", function()
-local randomPlayer = game.Players:GetPlayers()[math.random(1, #game.Players:GetPlayers())]
-
-Player.Character.HumanoidRootPart.CFrame =
-    CFrame.new(
-    Vector3.new(
-        randomPlayer.Character.Head.Position.X,
-        randomPlayer.Character.Head.Position.Y,
-        randomPlayer.Character.Head.Position.Z
-    )
-)
-end)
-local Button1 = Section2:CreateButton("Lag Switch F3", function()
-local ass = false
-local bitch = settings()
-
-game:service "UserInputService".InputEnded:connect(
-    function(i)
-        if i.KeyCode == Enum.KeyCode.F3 then
-            ass = not ass
-            bitch.Network.IncomingReplicationLag = ass and 10 or 0
-        end
-    end
-)
-end) 
-
-local Button1 = Section2:CreateButton("ServerHop", function()
-local PlaceID = game.PlaceId
-local AllIDs = {}
-local foundAnything = ""
-local actualHour = os.date("!*t").hour
-local Deleted = false
-local File = pcall(function()
-    AllIDs = HttpService:JSONDecode(readfile("NotSameServers.json"))
-end)
-if not File then
-    table.insert(AllIDs, actualHour)
-    writefile("NotSameServers.json", HttpService:JSONEncode(AllIDs))
-end
-function TPReturner()
-    local Site;
-    if foundAnything == "" then
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
-    else
-        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-    end
-    local ID = ""
-    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-        foundAnything = Site.nextPageCursor
-    end
-    local num = 0;
-    for i,v in pairs(Site.data) do
-        local Possible = true
-        ID = tostring(v.id)
-        if tonumber(v.maxPlayers) > tonumber(v.playing) then
-            for _,Existing in pairs(AllIDs) do
-                if num ~= 0 then
-                    if ID == tostring(Existing) then
-                        Possible = false
-                    end
-                else
-                    if tonumber(actualHour) ~= tonumber(Existing) then
-                        local delFile = pcall(function()
-                            delfile("NotSameServers.json")
-                            AllIDs = {}
-                            table.insert(AllIDs, actualHour)
-                        end)
-                    end
-                end
-                num = num + 1
-            end
-            if Possible == true then
-                table.insert(AllIDs, ID)
-                wait()
-                pcall(function()
-                    writefile("NotSameServers.json", HttpService:JSONEncode(AllIDs))
-                    wait()
-                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, Player)
-                end)
-                wait(4)
-            end
-        end
-    end
-end
-
-function Tween()
-    while wait() do
-        pcall(function()
-            TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
-    end
-end
-
--- If you'd like to use a script before server hopping (Like a Automatic Chest collector you can put the Tween() after it collected everything.
-Tween() 
-end)
-local Button1 = Section2:CreateButton("Rejoin", function()
-game:GetService("TeleportService"):Teleport(game.PlaceId, Player) end)
-
-
-local Button1 = Section2:CreateButton("Save Settings", function()
-Save()
-end)
-local Toggle3 = Section3:CreateToggle("UI Toggle", nil, function(State)
-	Window:Toggle(State)
-end)
-Toggle3:CreateKeybind(tostring(Config.Keybind):gsub("Enum.KeyCode.", ""), function(Key)
-	Config.Keybind = Enum.KeyCode[Key]
-end)
-Toggle3:SetState(true)
-Section3:CreateLabel("Credits DekuDimz#7960")
-Section3:CreateLabel("Credits AlexR32#3232 Ui")
-Section3:CreateLabel("Credits brush#7337")
-local Colorpicker3 = Section3:CreateColorpicker("UI Color", function(Color)
-	Window:ChangeColor(Color)
-end)
-Colorpicker3:UpdateColor(Config.Color)
-
--- credits to jan for patterns
-local Dropdown3 = Section4:CreateDropdown("Image", {"Default","Hearts","Abstract","Hexagon","Circles","Lace With Flowers","Floral"}, function(Name)
-	if Name == "Default" then
-		Window:SetBackground("2151741365")
-	elseif Name == "Hearts" then
-		Window:SetBackground("6073763717")
-	elseif Name == "Abstract" then
-		Window:SetBackground("6073743871")
-	elseif Name == "Hexagon" then
-		Window:SetBackground("6073628839")
-	elseif Name == "Circles" then
-		Window:SetBackground("6071579801")
-	elseif Name == "Lace With Flowers" then
-		Window:SetBackground("6071575925")
-	elseif Name == "Floral" then
-		Window:SetBackground("5553946656")
+        liIlIliIl("\nDon't execute for 2 times")
+        wait(1)
+        local ts = game:GetService("TeleportService")
+        local p = game:GetService("Players").LocalPlayer
+        local pid = game.PlaceId
+        ts:Teleport(pid, p)
 	end
-end)
-Dropdown3:SetOption("Default")
+end
 
-local Colorpicker4 = Section4:CreateColorpicker("Color", function(Color)
-	Window:SetBackgroundColor(Color)
-end)
-Colorpicker4:UpdateColor(Color3.new(1,1,1))
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
 
-local Slider3 = Section4:CreateSlider("Transparency",0,1,nil,false, function(Value)
-	Window:SetBackgroundTransparency(Value)
-end)
-Slider3:SetValue(0)
+local function MakeDraggable(topbarobject, object)
+	local Dragging = nil
+	local DragInput = nil
+	local DragStart = nil
+	local StartPosition = nil
 
-local Slider4 = Section4:CreateSlider("Tile Scale",0,1,nil,false, function(Value)
-	Window:SetTileScale(Value)
+	local function Update(input)
+		local Delta = input.Position - DragStart
+		local pos =
+			UDim2.new(
+				StartPosition.X.Scale,
+				StartPosition.X.Offset + Delta.X,
+				StartPosition.Y.Scale,
+				StartPosition.Y.Offset + Delta.Y
+			)
+		local Tween = TweenService:Create(object, TweenInfo.new(0.2), {Position = pos})
+		Tween:Play()
+	end
+
+	topbarobject.InputBegan:Connect(
+		function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				Dragging = true
+				DragStart = input.Position
+				StartPosition = object.Position
+
+				input.Changed:Connect(
+					function()
+						if input.UserInputState == Enum.UserInputState.End then
+							Dragging = false
+						end
+					end
+				)
+			end
+		end
+	)
+
+	topbarobject.InputChanged:Connect(
+		function(input)
+			if
+				input.UserInputType == Enum.UserInputType.MouseMovement or
+				input.UserInputType == Enum.UserInputType.Touch
+			then
+				DragInput = input
+			end
+		end
+	)
+
+	UserInputService.InputChanged:Connect(
+		function(input)
+			if input == DragInput and Dragging then
+				Update(input)
+			end
+		end
+	)
+end
+
+local library = {}
+
+function library:AddWindow(text,keybind)
+    local currenttab = ""
+    local uihide = false
+    local abc = false
+    keybind = keybind or Enum.KeyCode.RightControl
+    yoo = string.gsub(tostring(keybind),"Enum.KeyCode.","")
+
+    local Kub = Instance.new("ScreenGui")
+    Kub.Name = "Kub"
+    Kub.Parent = game.CoreGui
+    Kub.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local Main = Instance.new("Frame")
+    Main.Name = "Main"
+    Main.Parent = Kub
+    Main.AnchorPoint = Vector2.new(0.5,0.5)
+    Main.ClipsDescendants = true
+    Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    Main.Position = UDim2.new(0.5, 0, 0.499, 0)
+    Main.Size = UDim2.new(0, 0, 0, 0)
+
+    Main:TweenSize(UDim2.new(0, 656, 0, 400),"Out","Quad",0.4,true)
+
+    local MainCorner = Instance.new("UICorner")
+    MainCorner.Name = "MainCorner"
+    MainCorner.Parent = Main
+
+    local Top = Instance.new("Frame")
+    Top.Name = "Top"
+    Top.Parent = Main
+    Top.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Top.Size = UDim2.new(0, 656, 0, 27)
+
+    local TopCorner = Instance.new("UICorner")
+    TopCorner.Name = "TopCorner"
+    TopCorner.Parent = Top
+
+    local NameHub = Instance.new("TextLabel")
+    NameHub.Name = "NameHub"
+    NameHub.Parent = Top
+    NameHub.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    NameHub.BackgroundTransparency = 1.000
+    NameHub.Position = UDim2.new(0, 12, 0, 0)
+    NameHub.Size = UDim2.new(0, 61, 0, 27)
+    NameHub.Font = Enum.Font.GothamSemibold
+    NameHub.Text = string.upper(text)
+    NameHub.TextColor3 = Color3.fromRGB(225, 225, 225)
+    NameHub.TextSize = 17.000
+
+    local NameHub2 = Instance.new("TextLabel")
+    NameHub2.Name = "NameHub2"
+    NameHub2.Parent = Top
+    NameHub2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    NameHub2.BackgroundTransparency = 1.000
+    NameHub2.Position = UDim2.new(0, 65, 0, 0)
+    NameHub2.Size = UDim2.new(0, 55, 0, 27)
+    NameHub2.Font = Enum.Font.GothamSemibold
+    NameHub2.Text = "      | BF | FREE SCRIPT"
+    NameHub2.TextColor3 = Color3.fromRGB(255,0,0)
+    NameHub2.TextSize = 17.000
+    NameHub2.TextXAlignment = Enum.TextXAlignment.Left
+
+    local BindButton = Instance.new("TextButton")
+    BindButton.Name = "BindButton"
+    BindButton.Parent = Top
+    BindButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    BindButton.BackgroundTransparency = 1.000
+    BindButton.Position = UDim2.new(0, 550, 0, 0)
+    BindButton.Size = UDim2.new(0, 100, 0, 27)
+    BindButton.Font = Enum.Font.GothamSemibold
+    BindButton.Text = "[ "..string.gsub(tostring(keybind),"Enum.KeyCode.","").." ]"
+    BindButton.TextColor3 = Color3.fromRGB(103, 103, 103)
+    BindButton.TextSize = 11.000
+
+    BindButton.MouseButton1Click:Connect(function ()
+        BindButton.Text = "[ ... ]"
+        local inputwait = game:GetService("UserInputService").InputBegan:wait()
+        local shiba = inputwait.KeyCode == Enum.KeyCode.Unknown and inputwait.UserInputType or inputwait.KeyCode
+
+        if
+        shiba.Name ~= "Focus" and shiba.Name ~= "MouseMovement" and shiba.Name ~= "Focus"
+        then
+            BindButton.Text = "[ "..shiba.Name.." ]"
+            yoo = shiba.Name
+        end
+    end)
+
+    
+    local Tab = Instance.new("Frame")
+    Tab.Name = "Tab"
+    Tab.Parent = Main
+    Tab.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Tab.Position = UDim2.new(0, 12, 0, 40)
+    Tab.Size = UDim2.new(0, 633, 0, 29)
+
+    local TabCorner = Instance.new("UICorner")
+    TabCorner.Name = "TabCorner"
+    TabCorner.Parent = Tab
+    
+    local ScrollTab = Instance.new("ScrollingFrame")
+    ScrollTab.Name = "ScrollTab"
+    ScrollTab.Parent = Tab
+    ScrollTab.Active = true
+    ScrollTab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ScrollTab.BackgroundTransparency = 1.000
+    ScrollTab.BorderSizePixel = 0
+    ScrollTab.Size = UDim2.new(0, 633, 0, 29)
+    ScrollTab.CanvasSize = UDim2.new(0, 0, 0, 0)
+    ScrollTab.ScrollBarThickness = 0
+    
+    local UIPadding = Instance.new("UIPadding")
+    UIPadding.Parent = ScrollTab
+    UIPadding.PaddingLeft = UDim.new(0, 10)
+
+    local TabList = Instance.new("UIListLayout")
+    TabList.Name = "TabList"
+    TabList.Parent = ScrollTab
+    TabList.FillDirection = Enum.FillDirection.Horizontal
+    TabList.SortOrder = Enum.SortOrder.LayoutOrder
+    TabList.Padding = UDim.new(0, 5)
+
+    MakeDraggable(Top,Main)
+
+	UserInputService.InputBegan:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode[yoo] then
+			if uihide == false then
+				uihide = true
+				Main:TweenSize(UDim2.new(0, 0, 0, 0),"In","Quad",0.4,true)
+			else
+				uihide = false
+				Main:TweenSize(UDim2.new(0, 656, 0, 400),"Out","Quad",0.4,true)
+			end
+		end
+	end)
+
+    local Page = Instance.new("Frame")
+    Page.Name = "Page"
+    Page.Parent = Main
+    Page.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Page.Position = UDim2.new(0, 11, 0, 80)
+    Page.Size = UDim2.new(0, 633, 0, 305)
+
+    local PageCorner = Instance.new("UICorner")
+    PageCorner.Name = "PageCorner"
+    PageCorner.Parent = Page
+
+    local PageFolder = Instance.new("Folder")
+    PageFolder.Name = "PageFolder"
+    PageFolder.Parent = Page
+
+    local UIPageLayout = Instance.new("UIPageLayout")
+
+    UIPageLayout.Parent = PageFolder
+    UIPageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIPageLayout.EasingDirection = Enum.EasingDirection.InOut
+    UIPageLayout.EasingStyle = Enum.EasingStyle.Quad
+    UIPageLayout.Padding = UDim.new(0, 10)
+    UIPageLayout.TweenTime = 0.400
+    UIPageLayout.GamepadInputEnabled = false
+    UIPageLayout.ScrollWheelInputEnabled = false
+    UIPageLayout.TouchInputEnabled = false
+
+
+    local Ui = {}
+    function Ui:AddTab(text)
+        local TabButton = Instance.new("TextButton")
+        TabButton.Name = "TabButton"
+        TabButton.Parent = ScrollTab
+        TabButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        TabButton.BackgroundTransparency = 1.000
+        TabButton.Size = UDim2.new(0, 100, 0, 29)
+        TabButton.Font = Enum.Font.GothamSemibold
+        TabButton.TextColor3 = Color3.fromRGB(225, 225, 225)
+        TabButton.TextSize = 15.000
+        TabButton.Text = text
+        TabButton.TextTransparency = 0.500
+        
+        local MainPage = Instance.new("Frame")
+
+        MainPage.Name = "MainPage"
+        MainPage.Parent = PageFolder
+        MainPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        MainPage.BackgroundTransparency = 1.000
+        MainPage.Position = UDim2.new(0.00157977885, 0, 0, 0)
+        MainPage.Size = UDim2.new(0, 632, 0, 305)
+
+        TabButton.MouseButton1Click:Connect(function()
+            for i,v in next, ScrollTab:GetChildren() do
+                if v:IsA("TextButton") then
+                    TweenService:Create(
+                        v,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                end
+                TweenService:Create(
+                    TabButton,
+                    TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                    {TextTransparency = 0}
+                ):Play()
+            end
+            for i,v in next, PageFolder:GetChildren() do 
+                if v.Name == "MainPage" then
+                    currenttab = v.Name
+                end
+                UIPageLayout:JumpTo(MainPage)
+            end
+		end)
+
+		if abc == false then
+            for i,v in next, ScrollTab:GetChildren() do
+                if v:IsA("TextButton") then
+                    TweenService:Create(
+                        v,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                end
+                TweenService:Create(
+                    TabButton,
+                    TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                    {TextTransparency = 0}
+                ):Play()
+            end
+            UIPageLayout:JumpToIndex(1)
+			abc = true
+		end
+
+        local uitab = {}
+        function uitab:AddPage()
+            local MainFramePage = Instance.new("Frame")
+            local UICorner = Instance.new("UICorner")
+            local ScrollPage = Instance.new("ScrollingFrame")
+            local PageList = Instance.new("UIListLayout")
+            local UIPadding = Instance.new("UIPadding")
+            local UIPadding_2 = Instance.new("UIPadding")
+            local UIListLayout_2 = Instance.new("UIListLayout")
+        
+            MainFramePage.Name = "MainFramePage"
+            MainFramePage.Parent = MainPage
+            MainFramePage.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            MainFramePage.Size = UDim2.new(0, 300, 0, 285)
+        
+            UICorner.Parent = MainFramePage
+        
+            ScrollPage.Name = "ScrollPage"
+            ScrollPage.Parent = MainFramePage
+            ScrollPage.Active = true
+            ScrollPage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ScrollPage.BackgroundTransparency = 1.000
+            ScrollPage.BorderSizePixel = 0
+            ScrollPage.Size = UDim2.new(0, 300, 0, 285)
+            ScrollPage.CanvasSize = UDim2.new(0, 0, 0, 0)
+            ScrollPage.ScrollBarThickness = 0
+        
+            PageList.Name = "PageList"
+            PageList.Parent = ScrollPage
+            PageList.SortOrder = Enum.SortOrder.LayoutOrder
+            PageList.Padding = UDim.new(0, 13)
+        
+            UIPadding.Parent = ScrollPage
+            UIPadding.PaddingLeft = UDim.new(0, 20)
+            UIPadding.PaddingTop = UDim.new(0, 10)
+        
+            UIPadding_2.Parent = MainPage
+            UIPadding_2.PaddingLeft = UDim.new(0, 10)
+            UIPadding_2.PaddingTop = UDim.new(0, 10)
+        
+            UIListLayout_2.Parent = MainPage
+            UIListLayout_2.FillDirection = Enum.FillDirection.Horizontal
+            UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+            UIListLayout_2.Padding = UDim.new(0, 13)
+
+            game:GetService("RunService").Stepped:Connect(function()
+                pcall(function()
+                    ScrollPage.CanvasSize = UDim2.new(0,0,0,PageList.AbsoluteContentSize.Y + 26)
+                    ScrollTab.CanvasSize = UDim2.new(0,TabList.AbsoluteContentSize.X + 10,0,0)
+                end)
+            end)
+
+            local main = {}
+            function main:AddSeperator(text)
+                local Seperator = Instance.new("Frame")
+                local Sep1 = Instance.new("Frame")
+                local Sep2 = Instance.new("TextLabel")
+                local Sep3 = Instance.new("Frame")
+                
+                Seperator.Name = "Seperator"
+                Seperator.Parent = ScrollPage
+                Seperator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                Seperator.BackgroundTransparency = 1.000
+                Seperator.Size = UDim2.new(0, 260, 0, 20)
+                
+                Sep1.Name = "Sep1"
+                Sep1.Parent = Seperator
+                Sep1.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Sep1.BorderSizePixel = 0
+                Sep1.Position = UDim2.new(0, 0, 0, 10)
+                Sep1.Size = UDim2.new(0, 40, 0, 1)
+                
+                Sep2.Name = "Sep2"
+                Sep2.Parent = Seperator
+                Sep2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                Sep2.BackgroundTransparency = 1.000
+                Sep2.Position = UDim2.new(0, 80, 0, 0)
+                Sep2.Size = UDim2.new(0, 100, 0, 20)
+                Sep2.Font = Enum.Font.GothamSemibold
+                Sep2.Text = text
+                Sep2.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Sep2.TextSize = 14.000
+                
+                Sep3.Name = "Sep3"
+                Sep3.Parent = Seperator
+                Sep3.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Sep3.BorderSizePixel = 0
+                Sep3.Position = UDim2.new(0, 220, 0, 10)
+                Sep3.Size = UDim2.new(0, 40, 0, 1)
+            end
+
+            function main:AddLine()
+                local Linee = Instance.new("Frame")
+                local Line = Instance.new("Frame")
+                
+                Linee.Name = "Linee"
+                Linee.Parent = ScrollPage
+                Linee.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                Linee.BackgroundTransparency = 1.000
+                Linee.Position = UDim2.new(0, 0, 0.119999997, 0)
+                Linee.Size = UDim2.new(0, 260, 0, 20)
+                
+                Line.Name = "Line"
+                Line.Parent = Linee
+                Line.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Line.BorderSizePixel = 0
+                Line.Position = UDim2.new(0, 0, 0, 10)
+                Line.Size = UDim2.new(0, 260, 0, 1)
+            end
+
+            function main:AddButton(text,callback)
+                local Button = Instance.new("Frame")
+                local ButtonCorner = Instance.new("UICorner")
+                local Btn = Instance.new("TextButton")
+                local BtnCorner = Instance.new("UICorner")
+                
+                Button.Name = "Button"
+                Button.Parent = ScrollPage
+                Button.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Button.Size = UDim2.new(0, 260, 0, 38)
+                Button.BackgroundTransparency = 0.5
+                
+                ButtonCorner.CornerRadius = UDim.new(0, 5)
+                ButtonCorner.Name = "ButtonCorner"
+                ButtonCorner.Parent = Button
+                
+                Btn.Name = "Btn"
+                Btn.Parent = Button
+                Btn.AutoButtonColor = false
+                Btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                Btn.Position = UDim2.new(0, 1, 0, 1)
+                Btn.Size = UDim2.new(0, 258, 0, 36)
+                Btn.Font = Enum.Font.GothamSemibold
+                Btn.TextColor3 = Color3.fromRGB(225, 225, 225)
+                Btn.TextSize = 16.000
+                Btn.Text = text
+                Btn.TextTransparency = 0.500
+                
+                BtnCorner.CornerRadius = UDim.new(0, 5)
+                BtnCorner.Name = "BtnCorner"
+                BtnCorner.Parent = Btn
+
+                Btn.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Btn,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Button,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                end)
+
+                Btn.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Btn,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        Button,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                end)
+
+                Btn.MouseButton1Click:Connect(function()
+                    callback()
+                    Btn.TextSize = 9
+                    TweenService:Create(
+                        Btn,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Back,Enum.EasingDirection.Out),
+                        {TextSize = 16}
+                    ):Play()
+                end)
+            end 
+
+            function main:AddDropdown(text,option,callback)
+                local Dropdown = Instance.new("Frame")
+                local dropcorner = Instance.new("UICorner")
+                local Dropdownn = Instance.new("Frame")
+                local droppcorner = Instance.new("UICorner")
+                local DropBtn = Instance.new("TextButton")
+                local DropLabel = Instance.new("TextLabel")
+                local DropScroll = Instance.new("ScrollingFrame")
+                local dpd = Instance.new("UIPadding")
+                local dll = Instance.new("UIListLayout")
+                local DropImage = Instance.new("ImageLabel")
+                local isdropping = false
+
+                Dropdown.Name = "Dropdown"
+                Dropdown.Parent = ScrollPage
+                Dropdown.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Dropdown.BackgroundTransparency = 0.500
+                Dropdown.Size = UDim2.new(0, 260, 0, 38) -- 114
+                
+                dropcorner.CornerRadius = UDim.new(0, 5)
+                dropcorner.Name = "dropcorner"
+                dropcorner.Parent = Dropdown
+                
+                Dropdownn.Name = "Dropdownn"
+                Dropdownn.Parent = Dropdown
+                Dropdownn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                Dropdownn.ClipsDescendants = true
+                Dropdownn.Position = UDim2.new(0, 1, 0, 1)
+                Dropdownn.Size = UDim2.new(0, 258, 0, 36) -- 112
+                
+                droppcorner.CornerRadius = UDim.new(0, 5)
+                droppcorner.Name = "droppcorner"
+                droppcorner.Parent = Dropdownn
+                
+                DropBtn.Name = "DropBtn"
+                DropBtn.Parent = Dropdownn
+                DropBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                DropBtn.BackgroundTransparency = 1.000
+                DropBtn.Size = UDim2.new(0, 258, 0, 36)
+                DropBtn.Font = Enum.Font.SourceSans
+                DropBtn.Text = ""
+                DropBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+                DropBtn.TextSize = 14.000
+                
+                DropLabel.Name = "DropLabel"
+                DropLabel.Parent = Dropdownn
+                DropLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                DropLabel.BackgroundTransparency = 1.000
+                DropLabel.Position = UDim2.new(0, 15, 0, 0)
+                DropLabel.Size = UDim2.new(0, 180, 0, 36)
+                DropLabel.Font = Enum.Font.GothamSemibold
+                DropLabel.Text = text
+                DropLabel.TextColor3 = Color3.fromRGB(225, 225, 225)
+                DropLabel.TextSize = 16.000
+                DropLabel.TextTransparency = 0.500
+                DropLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+                DropImage.Name = "DropImage"
+                DropImage.Parent = Dropdownn
+                DropImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                DropImage.BackgroundTransparency = 1.000
+                DropImage.Position = UDim2.new(0, 230, 0, 9)
+                DropImage.Rotation = 180.000
+                DropImage.Size = UDim2.new(0, 20, 0, 20)
+                DropImage.Image = "rbxassetid://6031090990"
+                DropImage.ImageTransparency = 0.500
+                
+                DropScroll.Name = "DropScroll"
+                DropScroll.Parent = DropLabel
+                DropScroll.Active = true
+                DropScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                DropScroll.BackgroundTransparency = 1.000
+                DropScroll.BorderSizePixel = 0
+                DropScroll.Position = UDim2.new(-0.105555557, 0, 1.11111116, 0)
+                DropScroll.Size = UDim2.new(0, 258, 0, 70)
+                DropScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+                DropScroll.ScrollBarThickness = 3
+                
+                dpd.Name = "dpd"
+                dpd.Parent = DropScroll
+                dpd.PaddingLeft = UDim.new(0, 5)
+                dpd.PaddingTop = UDim.new(0, 5)
+                
+                dll.Name = "dll"
+                dll.Parent = DropScroll
+                dll.SortOrder = Enum.SortOrder.LayoutOrder
+                dll.Padding = UDim.new(0, 5)
+
+                for i,v in next, option do
+                    local Item = Instance.new("TextButton")
+                    Item.Name = "Item"
+                    Item.Parent = DropScroll
+                    Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    Item.BackgroundTransparency = 1.000
+                    Item.Size = UDim2.new(0, 248, 0, 29)
+                    Item.Font = Enum.Font.GothamSemibold
+                    Item.TextColor3 = Color3.fromRGB(225, 225, 225)
+                    Item.TextSize = 16.000
+                    Item.Text = tostring(v)
+                    Item.TextTransparency = 0.5
+
+                    Item.MouseEnter:Connect(function()
+                        TweenService:Create(
+                            Item,
+                            TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {TextTransparency = 0}
+                        ):Play()
+                    end)
+                    Item.MouseLeave:Connect(function()
+                        TweenService:Create(
+                            Item,
+                            TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {TextTransparency = 0.5}
+                        ):Play()
+                    end)
+
+                    Item.MouseButton1Click:Connect(function()
+                        isdropping = false
+                        Dropdown:TweenSize(UDim2.new(0,260,0,38),"Out","Quad",0.3,true)
+                        Dropdownn:TweenSize(UDim2.new(0,258,0,36),"Out","Quad",0.3,true)
+                        TweenService:Create(
+                            DropImage,
+                            TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {Rotation = 180}
+                        ):Play()
+                        callback(v)
+                    end)
+                end 
+
+                DropScroll.CanvasSize = UDim2.new(0,0,0,dll.AbsoluteContentSize.Y + 10)
+
+                DropBtn.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Dropdown,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        DropLabel,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        DropImage,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {ImageTransparency = 0}
+                    ):Play()
+                end)
+
+                DropBtn.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Dropdown,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        DropLabel,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        DropImage,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {ImageTransparency = 0.5}
+                    ):Play()
+                end)
+
+                DropBtn.MouseButton1Click:Connect(function()
+                    if isdropping == false then
+                        isdropping = true
+                        Dropdown:TweenSize(UDim2.new(0,260,0,114),"Out","Quad",0.3,true)
+                        Dropdownn:TweenSize(UDim2.new(0,258,0,112),"Out","Quad",0.3,true)
+                        DropBtn:TweenSize(UDim2.new(0,258,0,112),"Out","Quad",0.3,true)
+                        TweenService:Create(
+                            DropImage,
+                            TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {Rotation = 0}
+                        ):Play()
+                    else
+                        isdropping = false
+                        Dropdown:TweenSize(UDim2.new(0,260,0,38),"Out","Quad",0.3,true)
+                        Dropdownn:TweenSize(UDim2.new(0,258,0,36),"Out","Quad",0.3,true)
+                        DropBtn:TweenSize(UDim2.new(0,258,0,36),"Out","Quad",0.3,true)
+                        TweenService:Create(
+                            DropImage,
+                            TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {Rotation = 180}
+                        ):Play()
+                    end
+                end)
+
+                local drop = {}
+
+                function drop:Clear()
+                    DropLabel.Text = tostring(text).." :"
+                    isdropping = false
+                    Dropdown:TweenSize(UDim2.new(0,260,0,38),"Out","Quad",0.3,true)
+                    Dropdownn:TweenSize(UDim2.new(0,258,0,36),"Out","Quad",0.3,true)
+                    TweenService:Create(
+                        DropImage,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {Rotation = 180}
+                    ):Play()
+                    for i, v in next, DropScroll:GetChildren() do
+                        if v:IsA("TextButton") then
+                            v:Destroy()
+                        end
+                    end
+                end
+                function drop:Add(t)
+                    local Item = Instance.new("TextButton")
+                    Item.Name = "Item"
+                    Item.Parent = DropScroll
+                    Item.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    Item.BackgroundTransparency = 1.000
+                    Item.Size = UDim2.new(0, 248, 0, 29)
+                    Item.Font = Enum.Font.GothamSemibold
+                    Item.TextColor3 = Color3.fromRGB(225, 225, 225)
+                    Item.TextSize = 16.000
+                    Item.TextTransparency = 0.5
+                    Item.Text = tostring(t)
+
+                    Item.MouseButton1Click:Connect(function()
+                        isdropping = false
+                        Dropdown:TweenSize(UDim2.new(0,260,0,36),"Out","Quad",0.3,true)
+                        Dropdownn:TweenSize(UDim2.new(0,260,0,34),"Out","Quad",0.3,true)
+                        TweenService:Create(
+                            DropImage,
+                            TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {Rotation = 180}
+                        ):Play()
+                        callback(t)
+                    end)
+                end
+                return drop
+            end
+
+            function main:AddSlider(text,min,max,set,callback)
+                local Slider = Instance.new("Frame")
+                local slidercorner = Instance.new("UICorner")
+                local sliderr = Instance.new("Frame")
+                local sliderrcorner = Instance.new("UICorner")
+                local SliderLabel = Instance.new("TextLabel")
+                local HAHA = Instance.new("Frame")
+                local AHEHE = Instance.new("TextButton")
+                local bar = Instance.new("Frame")
+                local bar1 = Instance.new("Frame")
+                local bar1corner = Instance.new("UICorner")
+                local barcorner = Instance.new("UICorner")
+                local circlebar = Instance.new("Frame")
+                local UICorner = Instance.new("UICorner")
+                local slidervalue = Instance.new("Frame")
+                local valuecorner = Instance.new("UICorner")
+                local TextBox = Instance.new("TextBox")
+                local UICorner_2 = Instance.new("UICorner")
+
+                Slider.Name = "Slider"
+                Slider.Parent = ScrollPage
+                Slider.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Slider.BackgroundTransparency = 0.500
+                Slider.Size = UDim2.new(0, 260, 0, 48)
+
+                slidercorner.CornerRadius = UDim.new(0, 5)
+                slidercorner.Name = "slidercorner"
+                slidercorner.Parent = Slider
+
+                sliderr.Name = "sliderr"
+                sliderr.Parent = Slider
+                sliderr.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                sliderr.Position = UDim2.new(0, 1, 0, 1)
+                sliderr.Size = UDim2.new(0, 258, 0, 46)
+
+                sliderrcorner.CornerRadius = UDim.new(0, 5)
+                sliderrcorner.Name = "sliderrcorner"
+                sliderrcorner.Parent = sliderr
+
+                SliderLabel.Name = "SliderLabel"
+                SliderLabel.Parent = sliderr
+                SliderLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                SliderLabel.BackgroundTransparency = 1.000
+                SliderLabel.Position = UDim2.new(0.0581395365, 0, 0, 0)
+                SliderLabel.Size = UDim2.new(0, 180, 0, 26)
+                SliderLabel.Font = Enum.Font.GothamSemibold
+                SliderLabel.Text = text
+                SliderLabel.TextColor3 = Color3.fromRGB(225, 225, 225)
+                SliderLabel.TextSize = 16.000
+                SliderLabel.TextTransparency = 0.500
+                SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+                HAHA.Name = "HAHA"
+                HAHA.Parent = sliderr
+                HAHA.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                HAHA.BackgroundTransparency = 1.000
+                HAHA.Size = UDim2.new(0, 258, 0, 46)
+
+                AHEHE.Name = "AHEHE"
+                AHEHE.Parent = sliderr
+                AHEHE.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                AHEHE.BackgroundTransparency = 1.000
+                AHEHE.Position = UDim2.new(0, 10, 0, 35)
+                AHEHE.Size = UDim2.new(0, 238, 0, 5)
+                AHEHE.Font = Enum.Font.SourceSans
+                AHEHE.Text = ""
+                AHEHE.TextColor3 = Color3.fromRGB(0, 0, 0)
+                AHEHE.TextSize = 14.000
+
+                bar.Name = "bar"
+                bar.Parent = AHEHE
+                bar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+                bar.Size = UDim2.new(0, 238, 0, 5)
+
+                bar1.Name = "bar1"
+                bar1.Parent = bar
+                bar1.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                bar1.BackgroundTransparency = 0.500
+                bar1.Size = UDim2.new(set/max, 0, 0, 5)
+
+                bar1corner.CornerRadius = UDim.new(0, 5)
+                bar1corner.Name = "bar1corner"
+                bar1corner.Parent = bar1
+
+                barcorner.CornerRadius = UDim.new(0, 5)
+                barcorner.Name = "barcorner"
+                barcorner.Parent = bar
+
+                circlebar.Name = "circlebar"
+                circlebar.Parent = bar1
+                circlebar.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
+                circlebar.Position = UDim2.new(1, -2, 0, -3)
+                circlebar.Size = UDim2.new(0, 10, 0, 10)
+
+                UICorner.CornerRadius = UDim.new(0, 5)
+                UICorner.Parent = circlebar
+
+                slidervalue.Name = "slidervalue"
+                slidervalue.Parent = sliderr
+                slidervalue.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                slidervalue.BackgroundTransparency = 0.500
+                slidervalue.Position = UDim2.new(0, 185, 0, 5)
+                slidervalue.Size = UDim2.new(0, 65, 0, 18)
+
+                valuecorner.CornerRadius = UDim.new(0, 5)
+                valuecorner.Name = "valuecorner"
+                valuecorner.Parent = slidervalue
+
+                TextBox.Parent = slidervalue
+                TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+                TextBox.Position = UDim2.new(0, 1, 0, 1)
+                TextBox.Size = UDim2.new(0, 63, 0, 16)
+                TextBox.Font = Enum.Font.GothamSemibold
+                TextBox.TextColor3 = Color3.fromRGB(225, 225, 225)
+                TextBox.TextSize = 9.000
+                TextBox.Text = set
+                TextBox.TextTransparency = 0.500
+
+                UICorner_2.CornerRadius = UDim.new(0, 5)
+                UICorner_2.Parent = TextBox
+
+                HAHA.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Slider,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        SliderLabel,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        bar1,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        circlebar,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(225,225,225)}
+                    ):Play()
+                    TweenService:Create(
+                        slidervalue,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        TextBox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                end)
+
+                HAHA.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Slider,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        SliderLabel,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        bar1,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        circlebar,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(180,180,180)}
+                    ):Play()
+                    TweenService:Create(
+                        slidervalue,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        TextBox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                end)
+
+                local mouse = game.Players.LocalPlayer:GetMouse()
+                local uis = game:GetService("UserInputService")
+
+                if Value == nil then
+                    Value = set
+                    pcall(function()
+                        callback(Value)
+                    end)
+                end
+                
+                AHEHE.MouseButton1Down:Connect(function()
+                    Value = math.floor((((tonumber(max) - tonumber(min)) / 238) * bar1.AbsoluteSize.X) + tonumber(min)) or 0
+                    pcall(function()
+                        callback(Value)
+                    end)
+                    bar1.Size = UDim2.new(0, math.clamp(mouse.X - bar1.AbsolutePosition.X, 0, 238), 0, 5)
+                    circlebar.Position = UDim2.new(0, math.clamp(mouse.X - bar1.AbsolutePosition.X - 2, 0, 228), 0, -3)
+                    moveconnection = mouse.Move:Connect(function()
+                        TextBox.Text = Value
+                        Value = math.floor((((tonumber(max) - tonumber(min)) / 238) * bar1.AbsoluteSize.X) + tonumber(min))
+                        pcall(function()
+                            callback(Value)
+                        end)
+                        bar1.Size = UDim2.new(0, math.clamp(mouse.X - bar1.AbsolutePosition.X, 0, 238), 0, 5)
+                        circlebar.Position = UDim2.new(0, math.clamp(mouse.X - bar1.AbsolutePosition.X - 2, 0, 228), 0, -3)
+                    end)
+                    releaseconnection = uis.InputEnded:Connect(function(Mouse)
+                        if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
+                            Value = math.floor((((tonumber(max) - tonumber(min)) / 238) * bar1.AbsoluteSize.X) + tonumber(min))
+                            pcall(function()
+                                callback(Value)
+                            end)
+                            bar1.Size = UDim2.new(0, math.clamp(mouse.X - bar1.AbsolutePosition.X, 0, 238), 0, 5)
+                            circlebar.Position = UDim2.new(0, math.clamp(mouse.X - bar1.AbsolutePosition.X - 2, 0, 228), 0, -3)
+                            moveconnection:Disconnect()
+                            releaseconnection:Disconnect()
+                        end
+                    end)
+                end)
+                releaseconnection = uis.InputEnded:Connect(function(Mouse)
+                    if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
+                        Value = math.floor((((tonumber(max) - tonumber(min)) / 238) * bar1.AbsoluteSize.X) + tonumber(min))
+                        TextBox.Text = Value
+                    end
+                end)
+
+                TextBox.FocusLost:Connect(function()
+                    if tonumber(TextBox.Text) > max then
+                        TextBox.Text  = max
+                    end
+                    bar1.Size = UDim2.new((tonumber(TextBox.Text) or 0) / max, 0, 0, 5)
+                    circlebar.Position = UDim2.new(1, -2, 0, -3)
+                    TextBox.Text = tostring(tonumber(TextBox.Text) and math.floor( (tonumber(TextBox.Text) / max) * (max - min) + min) )
+                    pcall(callback, TextBox.Text)
+                end)
+            end
+
+            function main:AddTextbox(text,disappear,callback)
+                local Textbox = Instance.new("Frame")
+                local TextboxCorner = Instance.new("UICorner")
+                local Textboxx = Instance.new("Frame")
+                local TextboxxCorner = Instance.new("UICorner")
+                local TextboxLabel = Instance.new("TextLabel")
+                local txtbtn = Instance.new("TextButton")
+                local RealTextbox = Instance.new("TextBox")
+                local UICorner = Instance.new("UICorner")
+
+                Textbox.Name = "Textbox"
+                Textbox.Parent = ScrollPage
+                Textbox.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                Textbox.BackgroundTransparency = 0.500
+                Textbox.Size = UDim2.new(0, 260, 0, 38)
+
+                TextboxCorner.CornerRadius = UDim.new(0, 5)
+                TextboxCorner.Name = "TextboxCorner"
+                TextboxCorner.Parent = Textbox
+
+                Textboxx.Name = "Textboxx"
+                Textboxx.Parent = Textbox
+                Textboxx.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                Textboxx.Position = UDim2.new(0, 1, 0, 1)
+                Textboxx.Size = UDim2.new(0, 258, 0, 36)
+
+                TextboxxCorner.CornerRadius = UDim.new(0, 5)
+                TextboxxCorner.Name = "TextboxxCorner"
+                TextboxxCorner.Parent = Textboxx
+
+                TextboxLabel.Name = "TextboxLabel"
+                TextboxLabel.Parent = Textbox
+                TextboxLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                TextboxLabel.BackgroundTransparency = 1.000
+                TextboxLabel.Position = UDim2.new(0, 15, 0, 0)
+                TextboxLabel.Text = text
+                TextboxLabel.Size = UDim2.new(0, 145, 0, 38)
+                TextboxLabel.Font = Enum.Font.GothamSemibold
+                TextboxLabel.TextColor3 = Color3.fromRGB(255,0,0)
+                TextboxLabel.TextSize = 16.000
+                TextboxLabel.TextTransparency = 0.500
+                TextboxLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+                txtbtn.Name = "txtbtn"
+                txtbtn.Parent = Textbox
+                txtbtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                txtbtn.BackgroundTransparency = 1.000
+                txtbtn.Position = UDim2.new(0, 1, 0, 1)
+                txtbtn.Size = UDim2.new(0, 258, 0, 36)
+                txtbtn.Font = Enum.Font.SourceSans
+                txtbtn.Text = ""
+                txtbtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+                txtbtn.TextSize = 14.000
+
+                RealTextbox.Name = "RealTextbox"
+                RealTextbox.Parent = Textbox
+                RealTextbox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+                RealTextbox.BackgroundTransparency = 0.500
+                RealTextbox.Position = UDim2.new(0, 150, 0, 7)
+                RealTextbox.Size = UDim2.new(0, 100, 0, 22)
+                RealTextbox.Font = Enum.Font.GothamSemibold
+                RealTextbox.Text = ""
+                RealTextbox.TextColor3 = Color3.fromRGB(225, 225, 225)
+                RealTextbox.TextSize = 11.000
+                RealTextbox.TextTransparency = 0.500
+
+                txtbtn.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Textbox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        TextboxLabel,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        RealTextbox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        RealTextbox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                end)
+
+                txtbtn.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Textbox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        TextboxLabel,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        RealTextbox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+                    ):Play()
+                    TweenService:Create(
+                        RealTextbox,
+                        TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+                    ):Play()
+                end)
+
+                RealTextbox.FocusLost:Connect(function()
+                    callback(RealTextbox.Text)
+                    if disappear then
+                        RealTextbox.Text = ""
+                    end
+                end)
+
+                UICorner.CornerRadius = UDim.new(0, 5)
+                UICorner.Parent = RealTextbox
+            end
+
+            function main:AddToggle(text,config,callback)
+                local Toggle = Instance.new("Frame")
+                local ToggleCorner = Instance.new("UICorner")
+                local Tgle = Instance.new("Frame")
+                local TgleCorner = Instance.new("UICorner")
+                local tglebtn = Instance.new("TextButton")
+                local ToggleLabel = Instance.new("TextLabel")
+                local ToggleImage = Instance.new("Frame")
+                local ToggleImageCorner = Instance.new("UICorner")
+                local tgleimg = Instance.new("Frame")
+                local tgleimg_2 = Instance.new("UICorner")
+
+                Toggle.Name = "Toggle"
+                Toggle.Parent = ScrollPage
+                Toggle.BackgroundColor3 = Color3.fromRGB(233, 63, 63)
+                Toggle.BackgroundTransparency = 0.500
+                Toggle.Size = UDim2.new(0, 260, 0, 38)
+
+                ToggleCorner.CornerRadius = UDim.new(0, 5)
+                ToggleCorner.Name = "ToggleCorner"
+                ToggleCorner.Parent = Toggle
+
+                Tgle.Name = "Tgle"
+                Tgle.Parent = Toggle
+                Tgle.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                Tgle.Position = UDim2.new(0, 1, 0, 1)
+                Tgle.Size = UDim2.new(0, 258, 0, 36)
+
+                TgleCorner.CornerRadius = UDim.new(0, 5)
+                TgleCorner.Name = "TgleCorner"
+                TgleCorner.Parent = Tgle
+
+                tglebtn.Name = "tglebtn"
+                tglebtn.Parent = Tgle
+                tglebtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                tglebtn.BackgroundTransparency = 1.000
+                tglebtn.Size = UDim2.new(0, 258, 0, 36)
+                tglebtn.Font = Enum.Font.SourceSans
+                tglebtn.Text = ""
+                tglebtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+                tglebtn.TextSize = 14.000
+
+                ToggleLabel.Name = "ToggleLabel"
+                ToggleLabel.Parent = Tgle
+                ToggleLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                ToggleLabel.BackgroundTransparency = 1.000
+                ToggleLabel.Position = UDim2.new(0, 15, 0, 0)
+                ToggleLabel.Size = UDim2.new(0, 190, 0, 36)
+                ToggleLabel.Font = Enum.Font.GothamSemibold
+                ToggleLabel.Text = text
+                ToggleLabel.TextColor3 = Color3.fromRGB(233, 63, 63)
+                ToggleLabel.TextSize = 16.000
+                ToggleLabel.TextTransparency = 0.500
+                ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+                ToggleImage.Name = "ToggleImage"
+                ToggleImage.Parent = Tgle
+                ToggleImage.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+                ToggleImage.BackgroundTransparency = 0.500
+                ToggleImage.Position = UDim2.new(0, 225, 0, 5)
+                ToggleImage.Size = UDim2.new(0, 26, 0, 26)
+
+                ToggleImageCorner.CornerRadius = UDim.new(0, 5)
+                ToggleImageCorner.Name = "ToggleImageCorner"
+                ToggleImageCorner.Parent = ToggleImage
+
+                tgleimg.Name = "tgleimg"
+                tgleimg.Parent = ToggleImage
+                tgleimg.AnchorPoint = Vector2.new(0.5, 0.5)
+                tgleimg.BackgroundColor3 = Color3.fromRGB(255,0,0)
+                tgleimg.BackgroundTransparency = 0.500
+                tgleimg.Position = UDim2.new(0, 13, 0, 13)
+                tgleimg.Size = UDim2.new(0, 0, 0, 0)
+
+                tgleimg_2.CornerRadius = UDim.new(0, 5)
+                tgleimg_2.Name = "tgleimg_2"
+                tgleimg_2.Parent = tgleimg
+
+                tglebtn.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Toggle,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+				    ):Play()
+                    TweenService:Create(
+                        ToggleLabel,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+				    ):Play()
+                    TweenService:Create(
+                        ToggleImage,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+				    ):Play()
+                    TweenService:Create(
+                        tgleimg,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+				    ):Play()
+                end)
+                tglebtn.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Toggle,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+				    ):Play()
+                    TweenService:Create(
+                        ToggleLabel,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextTransparency = 0.5}
+				    ):Play()
+                    TweenService:Create(
+                        ToggleImage,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+				    ):Play()
+                    TweenService:Create(
+                        tgleimg,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0.5}
+				    ):Play()
+                end)
+                if config == true then
+                    istoggled = true
+                    pcall(callback,istoggled)
+                    tgleimg:TweenSize(UDim2.new(0, 26, 0, 26),"In","Bounce",0.1,true)
+                    TweenService:Create(
+                        Toggle,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(63,233,233)}
+				    ):Play()
+                    TweenService:Create(
+                        ToggleLabel,
+                        TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                        {TextColor3 = Color3.fromRGB(63,233,233)}
+                    ):Play()
+                end
+
+                local istoggled = config or false
+                tglebtn.MouseButton1Click:Connect(function()
+                    if istoggled == false then
+                        istoggled = true
+                        tgleimg:TweenSize(UDim2.new(0, 26, 0, 26),"In","Quad",0.1,true)
+                        TweenService:Create(
+                            Toggle,
+                            TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {BackgroundColor3 = Color3.fromRGB(63,233,233)}
+				        ):Play()
+                        TweenService:Create(
+                            ToggleLabel,
+                            TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {TextColor3 = Color3.fromRGB(63,233,233)}
+                        ):Play()
+                    else
+                        istoggled = false
+                        tgleimg:TweenSize(UDim2.new(0, 0, 0, 0),"In","Quad",0.1,true)
+                        TweenService:Create(
+                            Toggle,
+                            TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {BackgroundColor3 = Color3.fromRGB(233,63,63)}
+				        ):Play()
+                        TweenService:Create(
+                            ToggleLabel,
+                            TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+                            {TextColor3 = Color3.fromRGB(233,63,63)}
+                        ):Play()
+                    end
+                    pcall(callback,istoggled)
+                end)
+            end
+
+            function main:AddLabel(text)
+                local Label = Instance.new("TextLabel")
+                local PaddingLabel = Instance.new("UIPadding")
+                local labell = {}
+        
+                Label.Name = "Label"
+                Label.Parent = ScrollPage
+                Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                Label.BackgroundTransparency = 1.000
+                Label.Size = UDim2.new(0, 260, 0, 20)
+                Label.Font = Enum.Font.GothamSemibold
+                Label.TextColor3 = Color3.fromRGB(225, 225, 225)
+                Label.TextSize = 16.000
+                Label.Text = text
+                Label.TextXAlignment = Enum.TextXAlignment.Left
+    
+                PaddingLabel.PaddingLeft = UDim.new(0,15)
+                PaddingLabel.Parent = Label
+                PaddingLabel.Name = "PaddingLabel"
+        
+                function labell:Set(newtext)
+                    Label.Text = newtext
+                end
+    
+                return labell
+            end
+
+            return main
+        end
+        return uitab
+    end
+    return Ui
+end
+local function loading()
+	local Loading = Instance.new("ScreenGui")
+	local Blur = Instance.new("Frame")
+	local Main = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Logo = Instance.new("ImageLabel")
+	local UICorner_2 = Instance.new("UICorner")
+	local Load = Instance.new("Frame")
+	local UICorner_3 = Instance.new("UICorner")
+	local Bar = Instance.new("Frame")
+	local UICorner_4 = Instance.new("UICorner")
+	local BAR1 = Instance.new("Frame")
+	local UICorner_5 = Instance.new("UICorner")
+	local TextLabel = Instance.new("TextLabel")
+	local Top = Instance.new("Frame")
+	local UICorner_6 = Instance.new("UICorner")
+	local TextLabel_2 = Instance.new("TextLabel")
+	local TextLabel_3 = Instance.new("TextLabel")
+
+	--Properties:
+
+	Loading.Name = "Loading"
+	Loading.Parent = game.CoreGui
+	Loading.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+	Blur.Name = "Blur"
+	Blur.Parent = Loading
+	Blur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Blur.BackgroundTransparency = 0.500
+	Blur.Size = UDim2.new(1, 0, 1, 0)
+
+	Main.Name = "Main"
+	Main.Parent = Blur
+	Main.AnchorPoint = Vector2.new(0.5, 0.5)
+	Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+	Main.ClipsDescendants = true
+	Main.Position = UDim2.new(0.5, 0, 0.499241263, 0)
+	Main.Size = UDim2.new(0, 500, 0, 300)
+
+	UICorner.Parent = Main
+
+	Logo.Name = "Logo"
+	Logo.Parent = Main
+	Logo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	Logo.Position = UDim2.new(0.400000006, 0, 0.163333327, 0)
+	Logo.Size = UDim2.new(0, 100, 0, 100)
+	Logo.Image = "rbxassetid://8346185306"
+
+	UICorner_2.CornerRadius = UDim.new(0, 100)
+	UICorner_2.Parent = Logo
+
+	Load.Name = "Load"
+	Load.Parent = Main
+	Load.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	Load.Position = UDim2.new(0, 15, 0, 170)
+	Load.Size = UDim2.new(0, 470, 0, 115)
+
+	UICorner_3.Parent = Load
+
+	Bar.Name = "Bar"
+	Bar.Parent = Load
+	Bar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	Bar.Position = UDim2.new(0, 15, 0, 80)
+	Bar.Size = UDim2.new(0, 440, 0, 15)
+
+	UICorner_4.CornerRadius = UDim.new(0, 5)
+	UICorner_4.Parent = Bar
+
+	BAR1.Name = "BAR1"
+	BAR1.Parent = Bar
+	BAR1.BackgroundColor3 = Color3.fromRGB(255,0,0)
+	BAR1.Size = UDim2.new(0, 0, 0, 15)
+
+	UICorner_5.CornerRadius = UDim.new(0, 5)
+	UICorner_5.Parent = BAR1
+
+	TextLabel.Parent = Load
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.000
+	TextLabel.Position = UDim2.new(0.0319148935, 0, 0.173913032, 0)
+	TextLabel.Size = UDim2.new(0, 440, 0, 25)
+	TextLabel.Font = Enum.Font.GothamSemibold
+	TextLabel.Text = "Loading"
+	TextLabel.TextColor3 = Color3.fromRGB(225, 225, 225)
+	TextLabel.TextSize = 16.000
+	spawn(function()
+		for i = 1,5 do 
+			wait(0.5)
+			TextLabel.Text = "Loading."
+			wait(0.5) 
+			TextLabel.Text = "Loading.."
+			wait(0.5)
+			TextLabel.Text = "Loading..."
+		end
+	end)
+
+	Top.Name = "Top"
+	Top.Parent = Main
+	Top.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	Top.Size = UDim2.new(0, 500, 0, 30)
+
+	UICorner_6.Parent = Top
+
+	TextLabel_2.Parent = Top
+	TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel_2.BackgroundTransparency = 1.000
+	TextLabel_2.Position = UDim2.new(0.0299999993, 0, 0, 0)
+	TextLabel_2.Size = UDim2.new(0, 61, 0, 30)
+	TextLabel_2.Font = Enum.Font.GothamSemibold
+	TextLabel_2.Text = "MARK"
+	TextLabel_2.TextColor3 = Color3.fromRGB(225, 225, 225)
+	TextLabel_2.TextSize = 17.000
+
+	TextLabel_3.Parent = Top
+	TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel_3.BackgroundTransparency = 1.000
+	TextLabel_3.Position = UDim2.new(0.151999995, 0, 0, 0)
+	TextLabel_3.Size = UDim2.new(0, 61, 0, 30)
+	TextLabel_3.Font = Enum.Font.GothamSemibold
+	TextLabel_3.Text = "xHUB"
+	TextLabel_3.TextColor3 = Color3.fromRGB(255,0,0)
+	TextLabel_3.TextSize = 17.000
+	TextLabel_3.TextXAlignment = Enum.TextXAlignment.Left
+	
+	BAR1:TweenSize(UDim2.new(0,440,0,15),"Out","Linear",5,true)
+	wait(5)
+    Main:TweenSize(UDim2.new(0,0,0,0),"Out","Quad",0.4,true)
+    wait(0.4)
+	
+	do 
+		local Load = game.CoreGui:FindFirstChild("Loading")
+		if Load then
+			Load:Destroy()
+		end
+	end
+end
+
+loading()
+
+local Players = Get.Players
+local Workspace = Get.Workspace
+local RunService = Get.RunService
+local ReplicatedStorage = Get.ReplicatedStorage
+local HttpService = Get.HttpService
+local RunService = Get.RunService
+local Player = Players.LocalPlayer
+local Coins = Workspace["__THINGS"].Coins
+local wait = task.wait 
+local spawn = task.spawn
+repeat wait() until ReplicatedStorage:FindFirstChild("Library",true)
+local Client = require(ReplicatedStorage.Library.Client)
+local Frame = require(ReplicatedStorage:FindFirstChild("Framework"):FindFirstChild("Library"))
+local Orbs = getsenv(Player.PlayerScripts:FindFirstChild("Orbs",true))
+local Lootbags = getsenv(Player.PlayerScripts:FindFirstChild("Lootbags",true))
+debug.setupvalue(Client.Network.Invoke, 1, function() return true end)
+debug.setupvalue(Client.Network.Fire, 1, function() return true end)
+
+local win = library:AddWindow("    MARKxHUB   ")
+
+local MainTab = win:AddTab("Main")
+local Main1 = MainTab:AddPage()
+local Main2 = MainTab:AddPage()
+
+Main1:AddSeperator("Welcome to Hub")
+
+Main1:AddLabel("Game : YaY")
+
+local timelabel = Main1:AddLabel("Server Time")
+
+spawn(function()
+    while Wait() do 
+        pcall(function()
+            local GameTime = math.floor(workspace.DistributedGameTime+0.5)
+            local Hour = math.floor(GameTime/(60^2))%24
+            local Minute = math.floor(GameTime/(60^1))%60
+            local Second = math.floor(GameTime/(60^0))%60
+            timelabel:Set("Server Time : "..Hour.."h "..Minute.."m "..Second.."s")
+        end)
+    end
 end)
-Slider4:SetValue(0.5)
+
+Main1:AddLabel("CAN REFRESH")
+
+Main1:AddSeperator("Main")
+
+Main2:AddToggle("YaY",Config,function(value)
+    Config = value
+end)
+
+Main2:AddToggle("Auto Farm",Settings.Cum,function(State)
+Settings.Cum = State
+spawn(function()
+    while wait(0.1) do
+        pcall(function()
+            if Settings.Cum then
+            local Pets = Client.PetCmds.GetEquipped() 
+                for K,O in pairs(Pets) do
+                    Client.Network.Invoke('Join Coin', getNearestCoin().Name, {O.uid})
+                    Client.Network.Fire('Farm Coin', getNearestCoin().Name, O.uid)
+                    for i,v in pairs(Workspace["__THINGS"].Orbs:GetChildren()) do
+                        v.CFrame = Player.Character:GetModelCFrame()
+                    end 
+                    for i,v in pairs(Workspace["__THINGS"].Lootbags:GetChildren()) do
+                        v.CFrame = Player.Character:GetModelCFrame()
+                    end
+                end 
+            else
+                return Client.Network.Invoke("Redeem Rank Rewards"), Client.Network.Invoke("Redeem Free Gift", i), Frame.Signal.Fire("Fireworks Animation")
+            end 
+        end)
+    end 
+end)
+
+end)
+
+Main2:AddToggle("Skip Hatch Egg Anamtion",Settings.No,function(State)
+Settings.No = State
+for Index, Value in pairs(getgc(true)) do
+    if (typeof(Value) == "table" and rawget(Value, "OpenEgg")) and Settings.No then
+        Value.OpenEgg = function()
+            return
+        end
+    end
+    end
+end)
