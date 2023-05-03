@@ -8117,10 +8117,6 @@ function InMyNetWork(L_88_arg0)
     end
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/Fastlol.lua"))()
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/OBF-Fast.lua"))() -- fast |  ตีเร็ว
-
 Settings:Toggle("Fast Attack",true,function(value)
 _G.FastAttackNormalPC = value
 end)
@@ -8372,6 +8368,8 @@ end)
  wait(.1)
 end)
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/Fastlol.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/OBF-Fast.lua"))()
 else
     game.Players.LocalPlayer:Kick("Error Code 404")
     wait(5)
