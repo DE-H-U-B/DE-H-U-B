@@ -8060,76 +8060,71 @@ spawn(function()
     end
 end)
 
-    Settings:Toggle("Bring Mob",true,function(value)
-    _G.BringMonster = value
+    _G.BringMonster = true
+
+    Settings:Toggle("Magnet",true,function(value)
+    StartMagnet = value
     end)
 
-    Settings:Toggle("Magnet",true,function(vu)
-    _G.MagnetActive = vu
-    end)
-
-function bring2()
-	local plr = game.Players.LocalPlayer
-	pcall(function()
-	for i, v in pairs(game.workspace.Enemies:GetChildren()) do
-		for k, x in pairs (game.workspace.Enemies:GetChildren()) do
-		if x.Name == Mon then
-			if v.Name == Mon then
-				x.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-				v.Head.CanCollide = false
-				v.Humanoid:ChangeState(14)
-				v.HumanoidRootPart.CanCollide = false
-				v.HumanoidRootPart.Size = Vector3.new(80,80,80)
-				sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius", math.huge)
-			end
-		end
-		end
-	end
-	end)
-end
-spawn(function()
-	while wait() do
-		if _G.MagnetActive then
-			bring2()
-		end
+task.spawn(function()
+    while task.wait() do
+        pcall(function()
+            if StartMagnet then
+                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 500 then --not string.find(v.Name,"Boss") and 
+                        if InMyNetWork(v.HumanoidRootPart) then
+                            v.HumanoidRootPart.CFrame = Mon
+                            v.Humanoid.JumpPower = 0
+                            v.Humanoid.WalkSpeed = 0
+                            v.Humanoid.NameDisplayDistance = 0
+                            v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                            v.HumanoidRootPart.CanCollide = false
+                            v.Head.CanCollide = false
+                            if v.Humanoid:FindFirstChild("Animator") then
+                                v.Humanoid.Animator:Destroy()
+                            end
+                            sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius", math.huge)
+                            v.Humanoid:ChangeState(12) --12
+                            v.Humanoid:ChangeState(14) --12
+                        end
+                    end
+                end
+            end
+        end)
     end
 end)
 
-Settings:Toggle("Fast Attack",false,function(value)
-_G.FastAttack = value
-end)      
-    
-    coroutine.wrap(function()
-local StopCamera = require(game.ReplicatedStorage.Util.CameraShaker)StopCamera:Stop()
-    for v,v in pairs(getreg()) do
-        if typeof(v) == "function" and getfenv(v).script == game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework then
-             for v,v in pairs(debug.getupvalues(v)) do
-                if typeof(v) == "table" then
-                    spawn(function()
-                        game:GetService("RunService").RenderStepped:Connect(function()
-                            if _G.FastAttack then
-                                 pcall(function()
-                                     v.activeController.timeToNextAttack = -(math.huge^math.huge^math.huge)
-                                     v.activeController.timeToNextBlock = 0
-                                     v.activeController.attacking = false
-                                     v.activeController.increment = 1
-                                     v.activeController.blocking = false   
-                                     v.activeController.hitboxMagnitude = 150
-                                     v.activeController.active = false
-    		                         v.activeController.humanoid.AutoRotate = true
-    	                      	     v.activeController.focusStart = 1655503339.0980349
-    	                      	     v.activeController.currentAttackTrack = 0
-sethiddenproperty(game:GetService("Players").LocalPlayer, "SimulationRaxNerous", math.huge)
-
-                                 end)
-                             end
-                         end)
-                    end)
-                end
-            end
+spawn(function()
+    while true do
+        wait()
+        if setscriptable then
+            setscriptable(game.Players.LocalPlayer, "SimulationRadius", true)
+        end
+        if sethiddenproperty then
+            sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
         end
     end
-end)();
+end)
+
+function InMyNetWork(L_88_arg0)
+    if isnetworkowner then
+        return isnetworkowner(L_88_arg0)
+    else
+        if (L_88_arg0.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 250 then 
+            return true
+        end
+        return false
+    end
+end
+
+Settings:Toggle("Fast Attack (Mobile)",false,function(value)
+_G.FastAttack = value
+end)      
+
+Settings:Toggle("Super Fast Attack (Pc)",false,function(value)
+_G.SupFastAttack = value
+_G.SupGodFastAttack = value
+end)      
 
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
@@ -8157,7 +8152,7 @@ local a = require(game:GetService("ReplicatedStorage").Effect.Container.Misc.Dam
 local old = a.Run
 a.Run = function(...)
     args = {...}
-    args[1]['Value'] = "ERROR"
+    args[1]['Value'] = "."
     return old(...)
 end
     
@@ -8245,76 +8240,7 @@ end)
  wait(.1)
 end)
 
-local SuperFastMode = true -- Change to true if you want Super Super Super Fast attack (Like instant kill) but it will make the game kick you more than normal mode
-
-local plr = game.Players.LocalPlayer
-
-local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
-local CbFw2 = CbFw[2]
-
-function GetCurrentBlade() 
-    local p13 = CbFw2.activeController
-    local ret = p13.blades[1]
-    if not ret then return end
-    while ret.Parent~=game.Players.LocalPlayer.Character do ret=ret.Parent end
-    return ret
-end
-function AttackNoCD() 
-    local AC = CbFw2.activeController
-    for i = 1, 1 do 
-        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
-            plr.Character,
-            {plr.Character.HumanoidRootPart},
-            60
-        )
-        local cac = {}
-        local hash = {}
-        for k, v in pairs(bladehit) do
-            if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
-                table.insert(cac, v.Parent.HumanoidRootPart)
-                hash[v.Parent] = true
-            end
-        end
-        bladehit = cac
-        if #bladehit > 0 then
-            local u8 = debug.getupvalue(AC.attack, 5)
-            local u9 = debug.getupvalue(AC.attack, 6)
-            local u7 = debug.getupvalue(AC.attack, 4)
-            local u10 = debug.getupvalue(AC.attack, 7)
-            local u12 = (u8 * 798405 + u7 * 727595) % u9
-            local u13 = u7 * 798405
-            (function()
-                u12 = (u12 * u9 + u13) % 1099511627776
-                u8 = math.floor(u12 / u9)
-                u7 = u12 - u8 * u9
-            end)()
-            u10 = u10 + 1
-            debug.setupvalue(AC.attack, 5, u8)
-            debug.setupvalue(AC.attack, 6, u9)
-            debug.setupvalue(AC.attack, 4, u7)
-            debug.setupvalue(AC.attack, 7, u10)
-            pcall(function()
-                for k, v in pairs(AC.animator.anims.basic) do
-                    v:Play()
-                end                  
-            end)
-            if plr.Character:FindFirstChildOfClass("Tool") and AC.blades and AC.blades[1] then 
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetCurrentBlade()))
-                game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "") 
-            end
-        end
-    end
-end
-local cac
-if SuperFastMode then 
-	cac=task.wait
-else
-	cac=wait
-end
-while cac(0.10) do 
-	AttackNoCD()
-end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NaJaxHub/ser/main/Fastlol.lua"))()
 else
     game.Players.LocalPlayer:Kick("Error Code 404")
     wait(5)
