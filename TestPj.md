@@ -8335,6 +8335,15 @@ spawn(function()
          end
     end
 end)
+
+if game:IsLoaded() then
+    pcall(function()
+        repeat wait()
+            game:GetService("ReplicatedStorage").Effect.Container.Respawn:Destroy()
+            game:GetService("ReplicatedStorage").Effect.Container.Death:Destroy()
+        until not game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Death") or not game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Respawn")
+    end)
+end
     
     Settings:Seperator("Mastery Skill Settings")
     
