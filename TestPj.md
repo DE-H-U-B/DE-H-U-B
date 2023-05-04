@@ -8117,11 +8117,8 @@ function InMyNetWork(L_88_arg0)
     end
 end
 
-Settings:Toggle("Fast Attack",true,function(value)
+Settings:Toggle("Fast Attack (Mobile)",true,function(value)
 _G.FastAttackNormalPC = value
-end)
-
-Settings:Toggle("Fast Attack (Mobile)",false,function(value)
 _G.FastAttack = value
 end)
 
@@ -8336,7 +8333,7 @@ spawn(function()
     end
 end)
 
-if game:IsLoaded() then
+if _G.FastAttackNormalPC then
     pcall(function()
         repeat wait()
             game:GetService("ReplicatedStorage").Effect.Container.Respawn:Destroy()
