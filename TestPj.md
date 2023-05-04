@@ -8333,14 +8333,17 @@ spawn(function()
     end
 end)
 
-if _G.FastAttackNormalPC then
-    pcall(function()
-        repeat wait()
+spawn(function()
+    while wait() do
+        if _G.FastAttack then
+            pcall(function()
             game:GetService("ReplicatedStorage").Effect.Container.Respawn:Destroy()
             game:GetService("ReplicatedStorage").Effect.Container.Death:Destroy()
         until not game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Death") or not game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Respawn")
-    end)
-end
+       end)
+    end
+end)
+
     
     Settings:Seperator("Mastery Skill Settings")
     
